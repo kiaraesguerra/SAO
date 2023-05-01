@@ -44,8 +44,8 @@ class ECO_Module:
             self.activation == "relu"
             and self.in_ch != 3  # Input convolutional layer
         ):
-            rows = self.rows // 2
-            columns = self.columns // 2
+            rows = self.out_ch // 2
+            columns = self.in_ch // 2
             orthogonal_matrix = self._concat(self._ortho_gen(rows, columns))
             
         else:

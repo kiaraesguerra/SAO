@@ -73,7 +73,6 @@ args = parser.parse_args()
 if __name__ == "__main__":
     train_dl, test_dl = get_dataloader(args)
 
-    breakpoint()
     model = get_model(args)
     model = get_initializer(model, args)
     
@@ -93,7 +92,6 @@ if __name__ == "__main__":
 
     trainer.fit(model, train_dl, test_dl, ckpt_path=args.ckpt_path)
 
-    breakpoint()
     ckpt_path = callbacks[0].best_model_path  # Needs to be refactored
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
