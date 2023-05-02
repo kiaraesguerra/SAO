@@ -1,5 +1,5 @@
 from sao_utils.ramanujan_constructions import *
-
+from .delta import *
 
 class ECO_Module:
     def __init__(
@@ -127,9 +127,21 @@ def ECO_Constructor(module, **kwargs):
     return ECO_Module(module, **kwargs)()
 
 
+
 def ECO_Init(model, **kwargs):
     for _, module in model.named_modules():
         if isinstance(module, nn.Conv2d):
+            module.weight = nn.Parameter(ECO_Constructor(module, **kwargs))
+            
+    return model
+
+
+def Delta_ECO_Init(model, **kwargs):
+    delta_kwargs = {key: value for key, value in kwargs.items() if key in ['activation', 'in_channels', 'num_classes']}  
+    for _, module in model.named_modules():
+        if isinstance(module, nn.Conv2d) and (module.in_channels == 3 or module.stride[0] > 1):
+            module.weight = nn.Parameter(Delta_Constructor(module, **delta_kwargs))
+        elif isinstance(module, nn.Conv2d):
             module.weight = nn.Parameter(ECO_Constructor(module, **kwargs))
             
     return model
