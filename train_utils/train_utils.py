@@ -22,8 +22,8 @@ class Model(LightningModule):
         self.criterion = get_criterion(args)
         self.optimizer = get_optimizer(model, args)
         self.scheduler = get_scheduler(self.optimizer, args)
-        self.val_accuracy = Accuracy(task="multiclass", num_classes=10)
-        self.test_accuracy = Accuracy(task="multiclass", num_classes=10)
+        self.val_accuracy = Accuracy(task="multiclass", num_classes=args.num_classes)
+        self.train_accuracy = Accuracy(task="multiclass", num_classes=args.num_classes)
 
     def forward(self, x):
         out = self.model(x)
@@ -33,6 +33,12 @@ class Model(LightningModule):
         x, y = batch
         out = self.model(x)
         loss = self.criterion(out, y)
+        preds = torch.argmax(out, dim=1)
+        self.train_accuracy.update(preds, y)
+        self.log("train/loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log(
+            "train/acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True
+        )        
         return loss
 
     def validation_step(self, batch, batch_idx):

@@ -38,6 +38,9 @@ parser.add_argument(
 )
 parser.add_argument("--beta1", type=float, default=0.9)
 parser.add_argument("--beta2", type=float, default=0.99)
+parser.add_argument("--eps", type=float, default=1.0e-08)
+parser.add_argument("--amsgrad", type=bool, default=False)
+
 parser.add_argument("--warmup-epoch", type=int, default=0)
 parser.add_argument("--scheduler", type=str, default="multistep")
 parser.add_argument("--ckpt_path", type=str, default=None)
