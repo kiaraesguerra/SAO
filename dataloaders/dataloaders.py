@@ -3,7 +3,7 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-# from AutoAugment.autoaugment import CIFAR10Policy, SVHNPolicy
+from AutoAugment.autoaugment import CIFAR10Policy, SVHNPolicy
 
 
 def get_dataloader(args):
