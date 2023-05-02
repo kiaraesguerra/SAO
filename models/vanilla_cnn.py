@@ -37,7 +37,7 @@ def make_layers(depth, c, activation):
         else:
             conv2d = nn.Conv2d(c, c, kernel_size=3, padding=1)
         layers += [conv2d, act]
-    layers += [nn.AvgPool2d(8)]  # For mnist is 7
+    layers += [nn.AvgPool2d(9)]  # For mnist is 7
     return nn.Sequential(*layers), c
 
 
