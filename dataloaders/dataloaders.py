@@ -76,13 +76,17 @@ def get_transform(args):
         args.padding = 28
         args.size = 224
         args.mean, args.std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+        
     train_transform_list = [
         transforms.RandomCrop(size=(args.size, args.size), padding=args.padding),
+        transforms.Resize(size=(36, 36))
     ]
-    if args.dataset != "svhn":
-        train_transform_list.append(
-            transforms.RandomCrop(size=(args.size, args.size), padding=args.padding)
-        )
+    
+    
+    # if args.dataset != "svhn":
+    #     train_transform_list.append(
+    #         transforms.RandomCrop(size=(args.size, args.size), padding=args.padding)
+    #     )
 
     if args.autoaugment:
         if args.dataset == "cifar10" or args.dataset == "cifar100":
@@ -94,10 +98,13 @@ def get_transform(args):
 
     train_transform = transforms.Compose(
         train_transform_list
-        + [transforms.Resize(size=(36, 36)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
+        + [transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
     test_transform = transforms.Compose(
         [transforms.Resize(size=(36, 36)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
+    
+    #breakpoint()
+    #print(train_transform)
 
     return train_transform, test_transform
