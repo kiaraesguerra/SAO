@@ -1,4 +1,4 @@
-from initializations.eco import ECO_Init
+from initializations.eco import ECO_Init, Delta_ECO_Init
 from pruners.standard_pruning import *
 
 
@@ -20,7 +20,7 @@ def Standard_Pruning_Func(model, **kwargs):
 
 def get_pruner(model, args):
     if args.pruning_method in ramanujan_:
-        model = ECO_Init(
+        model = Delta_ECO_Init(
             model,
             gain=args.gain,
             method=args.pruning_method,
