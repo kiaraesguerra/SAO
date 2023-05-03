@@ -9,7 +9,6 @@ class Delta_Module:
         activation: str = "tanh",
         in_channels: int = 3,
         num_classes: int = 10,
-    
     ) -> nn.Module:
         self.module = module
         self.in_channels = in_channels
@@ -56,5 +55,7 @@ class Delta_Module:
         return self._delta()
 
 
-def Delta_Constructor(module, activation='tanh', in_channels=3, num_classes=10):
-    return Delta_Module(module, activation=activation, in_channels=in_channels, num_classes=num_classes)()
+def Delta_Constructor(module, activation="tanh", in_channels=3, num_classes=10):
+    return Delta_Module(
+        module, activation=activation, in_channels=in_channels, num_classes=num_classes
+    )()
