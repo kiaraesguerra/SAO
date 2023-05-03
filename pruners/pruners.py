@@ -22,6 +22,7 @@ def get_pruner(model, args):
     if args.pruning_method in ramanujan_:
         model = ECO_Init(
             model,
+            gain=args.gain,
             method=args.pruning_method,
             sparsity=args.sparsity,
             degree=args.degree,
