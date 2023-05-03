@@ -87,6 +87,13 @@ def get_transform(args):
     #     train_transform_list.append(
     #         transforms.RandomCrop(size=(args.size, args.size), padding=args.padding)
     #     )
+    
+    
+    if args.voltaaugment:
+        train_transform_list.extend(
+            [transforms.RandomHorizontalFlip(),
+             transforms.RandomVerticalFlip(),
+             transforms.RandomRotation(45)])
 
     if args.autoaugment:
         if args.dataset == "cifar10" or args.dataset == "cifar100":
@@ -100,11 +107,13 @@ def get_transform(args):
         train_transform_list
         + [transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
+    
+    
     test_transform = transforms.Compose(
         [transforms.Resize(size=(36, 36)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
     
-    #breakpoint()
+    breakpoint()
     #print(train_transform)
 
     return train_transform, test_transform
