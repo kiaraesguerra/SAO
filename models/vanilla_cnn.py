@@ -47,6 +47,19 @@ def van8(c, activation, **kwargs):
     model = Vanilla(*make_layers(8, c, activation), **kwargs)
     return model
 
+
+def van12(c, activation, **kwargs):
+    """Constructs a 12 layers vanilla model."""
+    model = Vanilla(*make_layers(12, c, activation), **kwargs)
+    return model
+
+
+def van16(c, activation, **kwargs):
+    """Constructs a 16 layers vanilla model."""
+    model = Vanilla(*make_layers(16, c, activation), **kwargs)
+    return model
+
+
 def van32(c, activation, **kwargs):
     """Constructs a 32 layers vanilla model."""
     model = Vanilla(*make_layers(32, c, activation), **kwargs)

@@ -75,6 +75,8 @@ args = parser.parse_args()
 
 
 if __name__ == "__main__":
+    
+    torch.backends.cudnn.benchmark=True
     train_dl, test_dl = get_dataloader(args)
 
     model = get_model(args)
