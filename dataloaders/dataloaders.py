@@ -88,12 +88,19 @@ def get_transform(args):
     #         transforms.RandomCrop(size=(args.size, args.size), padding=args.padding)
     #     )
     
+
+    if args.paperaugment:
+        train_transform_list.extend([
+            transforms.RandomAffine(degrees=(0), shear=(0.2), translate=(0.2, 0.2), scale=(0.2, 0.2))
+        ])
+        
+    
+    
+    
     
     if args.voltaaugment:
         train_transform_list.extend(
-            [transforms.RandomHorizontalFlip(),
-             transforms.RandomVerticalFlip(),
-             transforms.RandomRotation(45)])
+            [transforms.RandomHorizontalFlip()])
 
     if args.autoaugment:
         if args.dataset == "cifar10" or args.dataset == "cifar100":
