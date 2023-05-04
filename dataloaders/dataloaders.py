@@ -113,7 +113,6 @@ def get_transform(args):
         [transforms.Resize(size=(36, 36)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
     
-    breakpoint()
-    #print(train_transform)
+
 
     return train_transform, test_transform

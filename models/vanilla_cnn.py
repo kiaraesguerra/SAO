@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-__all__ = ["van8", "van32", "van128", "van256", "van512", "van768", "van1024"]
+__all__ = ["van8", "van12", "van16", "van32", "van128", "van256", "van512", "van768", "van1024"]
 
 
 class Vanilla(nn.Module):
