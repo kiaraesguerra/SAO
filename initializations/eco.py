@@ -132,7 +132,7 @@ def ECO_Init(model, gain, **kwargs):
         if isinstance(module, nn.Conv2d):
             module.weight = nn.Parameter(ECO_Constructor(module, **kwargs) * gain)
         elif isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, gain)
+            torch.nn.init.orthogonal_(module.weight, 1)
 
     return model
 
@@ -155,6 +155,6 @@ def Delta_ECO_Init(model, gain, **kwargs):
         ):
             module.weight = nn.Parameter(ECO_Constructor(module, **kwargs) * gain)
         elif isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, gain)
+            torch.nn.init.orthogonal_(module.weight, 1)
 
     return model

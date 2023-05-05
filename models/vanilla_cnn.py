@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-__all__ = ["van8", "van12", "van16", "van32", "van128", "van256", "van512", "van768", "van1024"]
+__all__ = ["van4", "van8", "van12", "van16", "van32", "van128", "van256", "van512", "van768", "van1024"]
 
 
 class Vanilla(nn.Module):
@@ -39,6 +39,13 @@ def make_layers(depth, c, activation):
         layers += [conv2d, act]
     layers += [nn.MaxPool2d(9)]  # For mnist is 7
     return nn.Sequential(*layers), c
+
+
+def van4(c, activation, **kwargs):
+    """Constructs a 8 layers vanilla model."""
+    model = Vanilla(*make_layers(4, c, activation), **kwargs)
+    return model
+
 
 
 

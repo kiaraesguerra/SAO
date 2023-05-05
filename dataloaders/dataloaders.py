@@ -29,7 +29,7 @@ def get_dataloader(args):
         args.num_classes = 10
         
     elif args.dataset == 'cinic10':
-        dir = './data/cinic10'
+        dir = './data/cinic-10'
         
         traindir = os.path.join(dir, 'train')
         validatedir = os.path.join(dir, 'valid')
@@ -71,7 +71,7 @@ def get_dataloader(args):
     
     return train_dl, validate_dl, test_dl
 
-
+g
 def get_transform(args):
     if args.dataset in ["cifar10", "cifar100", "svhn", "cinic10"]:
         args.padding = 4
