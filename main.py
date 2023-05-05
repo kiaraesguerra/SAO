@@ -48,7 +48,7 @@ parser.add_argument("--ckpt_path_resume", type=str, default=None)
 parser.add_argument("--weight-init", type=str, default="eco")
 parser.add_argument("--experiment-name", type=str, default="experiment")
 parser.add_argument("--autoaugment", type=bool, default=False)
-parser.add_argument("--voltaaugment", type=bool, default=False)
+parser.add_argument("--flip", type=bool, default=False)
 parser.add_argument("--paperaugment", type=bool, default=False)
 parser.add_argument("--cutmix", type=bool, default=False)
 parser.add_argument("--width", type=int, default=16)
@@ -78,7 +78,9 @@ args = parser.parse_args()
 if __name__ == "__main__":
     
     torch.backends.cudnn.benchmark=True
-    train_dl, test_dl = get_dataloader(args)
+    
+    
+    train_dl, validate_dl, test_dl = get_dataloader(args)
 
     model = get_model(args)
     model = get_initializer(model, args)
@@ -97,11 +99,16 @@ if __name__ == "__main__":
         logger=logger,
     )
 
-    trainer.fit(model, train_dl, test_dl, ckpt_path=args.ckpt_path)
+    trainer.fit(model, train_dl, validate_dl, ckpt_path=args.ckpt_path)
 
     ckpt_path = callbacks[0].best_model_path  # Needs to be refactored
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
+    
+    trainer.test(model, test_dl, ckpt_path=args.ckpt_path)
+    
+    
+    
 
     if args.pruning_method:
         remove_parameters(model)
