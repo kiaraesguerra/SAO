@@ -24,6 +24,7 @@ class Model(LightningModule):
         self.scheduler = get_scheduler(self.optimizer, args)
         self.val_accuracy = Accuracy(task="multiclass", num_classes=args.num_classes)
         self.train_accuracy = Accuracy(task="multiclass", num_classes=args.num_classes)
+        self.test_accuracy = Accuracy(task="multiclass", num_classes=args.num_classes)
 
     def forward(self, x):
         out = self.model(x)
@@ -51,6 +52,17 @@ class Model(LightningModule):
         self.log(
             "val/acc", self.val_accuracy, on_epoch=True, prog_bar=True, logger=True
         )
+
+    def test_step(self, batch, batch_idx, dataloader_idx=0):
+        x, y = batch
+        logits = self.model(x)
+        loss = self.criterion(logits, y)
+        preds = torch.argmax(logits, dim=1)
+        self.test_accuracy.update(preds, y)
+        #self.log("test/loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log(
+            "test/acc", self.test_accuracy, on_epoch=True, prog_bar=True, logger=True
+            )
 
     def configure_optimizers(self):
         return [self.optimizer], [{"scheduler": self.scheduler, "interval": "epoch"}]

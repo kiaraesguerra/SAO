@@ -69,7 +69,6 @@ parser.add_argument("--activation", type=str, default="tanh", choices=["tanh", "
 parser.add_argument("--dirpath", type=str, default="results")
 parser.add_argument("--gain", type=float, default=1.0)
 parser.add_argument("--callbacks", type=list, default=["checkpoint"])
-parser.add_argument("--num-classes", type=int, default=10)
 parser.add_argument("--in-channels", type=int, default=3)
 
 args = parser.parse_args()
@@ -100,12 +99,15 @@ if __name__ == "__main__":
     )
 
     trainer.fit(model, train_dl, validate_dl, ckpt_path=args.ckpt_path)
+    trainer.test(dataloaders=test_dl, ckpt_path=args.ckpt_path)
+    
+    
 
     ckpt_path = callbacks[0].best_model_path  # Needs to be refactored
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
     
-    trainer.test(model, test_dl, ckpt_path=args.ckpt_path)
+    
     
     
     
