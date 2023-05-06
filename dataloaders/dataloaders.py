@@ -71,7 +71,6 @@ def get_dataloader(args):
     
     return train_dl, validate_dl, test_dl
 
-g
 def get_transform(args):
     if args.dataset in ["cifar10", "cifar100", "svhn", "cinic10"]:
         args.padding = 4

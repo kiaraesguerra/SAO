@@ -16,6 +16,7 @@ def get_initializer(model, args):
         )
     elif args.weight_init == "delta-eco":
         print("Delta-ECO init")
+
         model = Delta_ECO_Init(
             model,
             gain=args.gain,
@@ -25,6 +26,21 @@ def get_initializer(model, args):
             in_channels=args.in_channels,
             num_classes=args.num_classes,
         )
+
+    elif args.weight_init == 'delta':
+
+        model = Delta_Init(
+            model,
+            gain=args.gain,
+            sparsity=args.sparsity,
+            degree=args.degree,
+            activation=args.activation,
+            in_channels=args.in_channels,
+            num_classes=args.num_classes,
+        )
+
+
+
 
     elif args.weight_init == "kaiming-normal":
         print("Kaiming init")

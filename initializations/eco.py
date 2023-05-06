@@ -158,3 +158,22 @@ def Delta_ECO_Init(model, gain, **kwargs):
             torch.nn.init.orthogonal_(module.weight, 1)
 
     return model
+
+def Delta_Init(model, gain, **kwargs):
+    delta_kwargs = {
+        key: value
+        for key, value in kwargs.items()
+        if key in ["activation", "in_channels", "num_classes"]
+    }
+    for _, module in model.named_modules():
+        if isinstance(module, nn.Conv2d):
+            module.weight = nn.Parameter(
+                Delta_Constructor(module, **delta_kwargs) * gain
+            )
+        elif isinstance(module, nn.Linear):
+            torch.nn.init.orthogonal_(module.weight, 1)
+
+    return model
+
+
+
