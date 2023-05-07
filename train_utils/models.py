@@ -15,6 +15,11 @@ def get_model(args):
             model = models.__dict__[args.model](
                 num_classes=args.num_classes, pretrained=True
             )
+            
+    elif "lip" in args.model:
+        print("=> creating model '{}'".format(args.model))
+        model = models.__dict__[args.model](activation=args.activation, num_classes=args.num_classes, init_channels=args.width)
+         
     else:
         print("=> creating model '{}'".format(args.model))
         model = models.__dict__[args.model](
