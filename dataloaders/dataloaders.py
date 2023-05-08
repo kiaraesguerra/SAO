@@ -91,7 +91,7 @@ def get_transform(args):
         
     train_transform_list = [
         transforms.RandomCrop(size=(args.size, args.size), padding=args.padding),
-        transforms.Resize(size=(36, 36))
+        transforms.Resize(size=(args.image_size, args.image_size))
     ]
     
 
@@ -114,7 +114,7 @@ def get_transform(args):
     
 
     test_transform = transforms.Compose(
-        [transforms.Resize(size=(36, 36)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
+        [transforms.Resize(size=(args.image_size, args.image_size)), transforms.ToTensor(), transforms.Normalize(mean=args.mean, std=args.std)]
     )
     
 

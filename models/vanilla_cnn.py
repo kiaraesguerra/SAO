@@ -32,12 +32,18 @@ def make_layers(depth, c, activation):
         layers += [conv2d, act]
         in_channels = c
     for i in range(depth):
-        if i > 1:
-            conv2d = nn.Conv2d(c, c, kernel_size=3, padding=3, dilation=3, padding_mode='circular')
+        # if i > 1:
+        #     conv2d = nn.Conv2d(c, c, kernel_size=3, padding=3, dilation=3, padding_mode='circular')
+        # else:
+        if i == depth // 2 - 1:
+            conv2d = nn.Conv2d(c, c, kernel_size=3, padding=1, stride=2)
+        elif i > depth - 2:
+            conv2d = nn.Conv2d(c, c, kernel_size=3, padding=1, stride=2)
+            
         else:
             conv2d = nn.Conv2d(c, c, kernel_size=3, padding=1)
         layers += [conv2d, act]
-    layers += [nn.MaxPool2d(9)]  # For mnist is 7
+    #layers += [nn.MaxPool2d(9)]  # For mnist is 7
     return nn.Sequential(*layers), c
 
 
