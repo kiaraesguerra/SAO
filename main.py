@@ -9,7 +9,7 @@ from initializations.initializations import get_initializer
 from pytorch_lightning import Trainer
 import models
 import torch
-from train_utils.utils import remove_parameters
+from train_utils.utils import remove_parameters, measure_sparsity
 
 model_names = sorted(
     name
@@ -102,7 +102,8 @@ if __name__ == "__main__":
     trainer.test(dataloaders=test_dl, ckpt_path=args.ckpt_path)
     
     
-
+    print(f'Model sparsity = {measure_sparsity(model)}')
+    
     ckpt_path = callbacks[0].best_model_path  # Needs to be refactored
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
