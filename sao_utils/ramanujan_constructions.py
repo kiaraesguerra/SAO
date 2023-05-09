@@ -123,6 +123,7 @@ class Ramanujan_Constructions:
         #     ramanujan_mask = self.ramanujan_mask
         # else:
         ramanujan_mask = self._block_construct()
+        #ramanujan_mask = torch.abs(ramanujan_mask)
         self.ramanujan_mask = ramanujan_mask
 
         c = int(torch.sum(ramanujan_mask, 0)[0])
@@ -233,11 +234,13 @@ class Ramanujan_Construction:
                 and module.out_features != self.num_classes
             ):
                 weight, mask = self._sao_linear(module)
+                mask = torch.abs(mask)
                 module.weight = nn.Parameter(weight)
                 torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
 
             elif isinstance(module, nn.Conv2d) and module.in_channels != 3:
                 weight, mask = self._sao_delta(module)
+                mask = torch.abs(mask)
                 module.weight = nn.Parameter(weight)
                 torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
 
