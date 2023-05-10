@@ -29,7 +29,7 @@ def get_dataloader(args):
         args.num_classes = 10
         
     elif args.dataset == 'cinic10':
-        dir = './data/cinic-10'
+        dir = '../data/cinic-10'
         
         traindir = os.path.join(dir, 'train')
         validatedir = os.path.join(dir, 'valid')

@@ -177,6 +177,7 @@ class Ramanujan_Construction:
     def __init__(
         self,
         model,
+        gain: int = 1,
         sparsity: float = None,
         degree: int = None,
         method: str = "SAO",
@@ -201,6 +202,7 @@ class Ramanujan_Construction:
         self.method = method
         self.activation = activation
         self.same_mask = same_mask
+        self.gain = gain
 
     def _ramanujan_structure(self, module):
         constructor = Ramanujan_Constructions(
@@ -235,13 +237,13 @@ class Ramanujan_Construction:
             ):
                 weight, mask = self._sao_linear(module)
                 mask = torch.abs(mask)
-                module.weight = nn.Parameter(weight)
+                module.weight = nn.Parameter(weight * self.gain)
                 torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
 
             elif isinstance(module, nn.Conv2d) and module.in_channels != 3:
                 weight, mask = self._sao_delta(module)
                 mask = torch.abs(mask)
-                module.weight = nn.Parameter(weight)
+                module.weight = nn.Parameter(weight * self.gain)
                 torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
 
         return self.model

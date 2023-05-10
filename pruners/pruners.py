@@ -32,19 +32,19 @@ def Delta_Init(model, **kwargs):
 
 
 def get_pruner(model, args):
-    if args.pruning_method in ramanujan_:
-        model = Delta_ECO_Init(
-            model,
-            gain=args.gain,
-            method=args.pruning_method,
-            sparsity=args.sparsity,
-            degree=args.degree,
-            activation=args.activation,
-            in_channels=args.in_channels,
-            num_classes=args.num_classes,
-        )
+    # if args.pruning_method in ramanujan_:
+    #     model = Delta_ECO_Init(
+    #         model,
+    #         gain=args.gain,
+    #         method=args.pruning_method,
+    #         sparsity=args.sparsity,
+    #         degree=args.degree,
+    #         activation=args.activation,
+    #         in_channels=args.in_channels,
+    #         num_classes=args.num_classes,
+    #     )
         
-    elif args.pruning_method in ramanujan_delta_:
+    if args.pruning_method in ramanujan_:
         model = Delta_Init(
             model,
             gain=args.gain,
