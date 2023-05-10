@@ -86,7 +86,7 @@ if __name__ == "__main__":
     
     if args.pruning_method:
         model = get_pruner(model, args)
-
+    print(f'Model sparsity = {measure_sparsity(model)}')
     model = get_plmodule(model, args)
     callbacks = get_callback(args)
     logger = get_logger(args)
@@ -100,7 +100,6 @@ if __name__ == "__main__":
 
     trainer.fit(model, train_dl, validate_dl, ckpt_path=args.ckpt_path)
     trainer.test(dataloaders=test_dl, ckpt_path=args.ckpt_path)
-    
     
     print(f'Model sparsity = {measure_sparsity(model)}')
     
