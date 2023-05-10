@@ -7,7 +7,7 @@ class Vanilla(nn.Module):
     def __init__(self, base, c, num_classes=10):
         super(Vanilla, self).__init__()
         self.base = base
-        self.fc = nn.Linear(c, num_classes)
+        self.fc = nn.Linear(c * 4, num_classes)
 
     def forward(self, x):
         x = self.base(x)

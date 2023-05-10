@@ -100,7 +100,7 @@ def get_transform(args):
             [transforms.RandomHorizontalFlip()])
 
     if args.autoaugment:
-        if args.dataset == "cifar10" or args.dataset == "cifar100":
+        if args.dataset == "cifar10" or args.dataset == "cifar100" or args.dataset == "cinic10":
             train_transform_list.append(CIFAR10Policy())
         elif args.dataset == "svhn":
             train_transform_list.append(SVHNPolicy())
