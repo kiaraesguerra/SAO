@@ -40,7 +40,10 @@ def make_layers(depth, c, activation):
                  padding_mode='circular')
           
         else:
-            if i > depth // 2 - 1:
+            if i < 2:
+                conv2d = nn.Conv2d(in_channels, c, kernel_size=3, padding=1, stride=1)
+            
+            elif i > depth // 2 - 1:
                 conv2d = nn.Conv2d(c, c, kernel_size=3, padding=1, dilation=1, padding_mode='circular')
             else:
                 conv2d = nn.Conv2d(c, c, kernel_size=3, padding=3, dilation=3, padding_mode='circular')
