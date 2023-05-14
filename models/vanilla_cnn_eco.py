@@ -1,8 +1,44 @@
 import torch.nn as nn
+import torch.nn.functional as F
+import einops
 
 __all__ = ["vanlip8", "vanlip12", "vanlip16"]
 
 
+class ECO(nn.Module):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, padding=None, dilation=None,
+                 bias=True, padding_mode='circular'):
+        super(ECO, self).__init__()
+        assert (stride==1) or (stride==2) or (stride==3)
+
+        self.out_channels = out_channels
+        self.in_channels = in_channels*stride*stride
+        self.max_channels = max(self.out_channels, self.in_channels)
+        self.stride = stride
+        self.kernel_size = kernel_size
+        self.conv = nn.Conv2d(self.max_channels, self.max_channels, self.kernel_size, stride=1,
+                              padding=padding, dilation=dilation, padding_mode=padding_mode,
+                              bias=bias)
+
+    def forward(self, x):
+        if self.stride > 1:
+            x = einops.rearrange(x, "b c (w k1) (h k2) -> b (c k1 k2) w h", 
+                                 k1=self.stride, k2=self.stride)
+        if self.out_channels > self.in_channels:
+            diff_channels = self.out_channels - self.in_channels
+            p4d = (0, 0, 0, 0, 0, diff_channels, 0, 0)
+            curr_z = F.pad(x, p4d)
+        else:
+            curr_z = x
+
+    
+        curr_z = self.conv(curr_z)
+        z = curr_z
+        if self.out_channels < self.in_channels:
+            z = z[:, :self.out_channels, :, :]
+            
+        return z
+        
 class Vanilla_Lip(nn.Module):
     def __init__(self, base, c, num_classes=10):
         super(Vanilla_Lip, self).__init__()
