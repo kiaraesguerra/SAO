@@ -31,6 +31,7 @@ class Delta_Module(Ramanujan_Constructions):
         rand_matrix = torch.randn((max(rows, columns), min(rows, columns)))
         q, _ = torch.qr(rand_matrix)
         orthogonal_matrix = q[:, :columns]
+
         return orthogonal_matrix.T if columns > rows else orthogonal_matrix   
         
         
@@ -62,7 +63,7 @@ class Delta_Module(Ramanujan_Constructions):
         return sao_delta_weights, sao_delta_mask
     
     def _delta(self):
-        if self.activation == 'relu' or self.module.in_channels == 3:
+        if self.activation == 'relu' and self.module.in_channels > 3:
             W_0 = self._ortho_gen(
                     self.module.weight.shape[0] // 2, self.module.weight.shape[1] // 2
                 )
@@ -71,13 +72,14 @@ class Delta_Module(Ramanujan_Constructions):
         else:
             weights = self._ortho_gen(
                     self.module.weight.shape[0], self.module.weight.shape[1])
+
         delta_weights = torch.zeros_like(self.module.weight).to("cuda")
         delta_weights[:, :, 1, 1] = weights
 
         return delta_weights
     
     def __call__(self):
-        return self._sao_delta() if self.degree or self.sparsity else self._delta()
+        return self._sao_delta() if (self.degree or self.sparsity) and self.module.in_channels > 3 and self.method == 'SAO' else self._delta()
 
 
 def Delta_Constructor(module, **kwargs):

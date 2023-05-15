@@ -5,6 +5,7 @@ def get_initializer(model, args):
         print("Initializing model with ECO")
         model = ECO_Init(
             model,
+            method=args.pruning_method,
             gain=args.gain,
             sparsity=args.sparsity,
             degree=args.degree,
@@ -16,6 +17,7 @@ def get_initializer(model, args):
         print("Initializing model with Delta-ECO")
         model = Delta_ECO_Init(
             model,
+            method=args.pruning_method,
             gain=args.gain,
             sparsity=args.sparsity,
             degree=args.degree,
@@ -28,6 +30,7 @@ def get_initializer(model, args):
         print("Initializing model with Delta")
         model = Delta_Init(
             model,
+            method=args.pruning_method,
             gain=args.gain,
             sparsity=args.sparsity,
             degree=args.degree,

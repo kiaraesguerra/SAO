@@ -11,6 +11,7 @@ def Delta_Init(model, **kwargs):
             if isinstance(vals, tuple):
                 module.weight = nn.Parameter(vals[0])
                 torch.nn.utils.prune.custom_from_mask(module, "weight", vals[1])
+            
             else:
                 module.weight = nn.Parameter(vals)
                 

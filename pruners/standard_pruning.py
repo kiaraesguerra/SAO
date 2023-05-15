@@ -56,9 +56,9 @@ class Standard_Pruning:
         self.in_channels = in_channels
         self.num_classes = num_classes
 
-        if pruner == "lrp":
+        if pruner == "lrp" or pruner == "LRP":
             self.pruner = mask_random
-        elif pruner == "lmp":
+        elif pruner == "lmp" or pruner == "LMP":
             self.pruner = prune_vanilla_kernelwise
 
     def _sparsity_from_degree(self):

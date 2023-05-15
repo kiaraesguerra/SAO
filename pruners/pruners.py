@@ -1,5 +1,4 @@
 from pruners.standard_pruning import *
-from sao_utils.ramanujan_constructions import Ramanujan_Construction
 from initializations.init_calls import *
 
 
