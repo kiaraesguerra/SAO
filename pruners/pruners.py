@@ -1,6 +1,7 @@
-from initializations.eco import ECO_Init, Delta_ECO_Init
 from pruners.standard_pruning import *
 from sao_utils.ramanujan_constructions import Ramanujan_Construction
+from initializations.init_calls import *
+
 
 ramanujan_ = [
     "SAO",
@@ -9,15 +10,7 @@ ramanujan_ = [
     "RG-N-relu",
 ]
 
-ramanujan_delta_ = [
-    "SAO-delta",
-    "RG-delta",
-    "RG-U-delta",
-    "RG-N-delta",
-]
-
-
-standard_ = ["LMP", "LRP"]
+standard_ = ["LMP", "LRP", "lmp", "lrp"]
 
 
 def Standard_Pruning_Func(model, **kwargs):
@@ -25,26 +18,21 @@ def Standard_Pruning_Func(model, **kwargs):
     model = pruningMethod()
     return model
 
-def Delta_Init(model, **kwargs):
-    constructionMethod = Ramanujan_Construction(model, **kwargs)
-    model = constructionMethod()
-    return model
-
 
 def get_pruner(model, args):
-    # if args.pruning_method in ramanujan_:
-    #     model = Delta_ECO_Init(
-    #         model,
-    #         gain=args.gain,
-    #         method=args.pruning_method,
-    #         sparsity=args.sparsity,
-    #         degree=args.degree,
-    #         activation=args.activation,
-    #         in_channels=args.in_channels,
-    #         num_classes=args.num_classes,
-    #     )
+    if args.pruning_method in ramanujan_ and "eco" in args.model:
+        model = Delta_ECO_Init(
+            model,
+            gain=args.gain,
+            method=args.pruning_method,
+            sparsity=args.sparsity,
+            degree=args.degree,
+            activation=args.activation,
+            in_channels=args.in_channels,
+            num_classes=args.num_classes,
+        )
         
-    if args.pruning_method in ramanujan_:
+    elif args.pruning_method in ramanujan_:
         model = Delta_Init(
             model,
             gain=args.gain,

@@ -60,8 +60,7 @@ parser.add_argument("--filename", type=str, default="best")
 parser.add_argument(
     "--pruning-method",
     type=str,
-    default=None,
-    choices=["LMP", "LRP", "SAO", "RG-U", "RG-N"],
+    default=None
 )
 parser.add_argument("--degree", type=int, default=None)
 parser.add_argument("--sparsity", type=float, default=None)
@@ -77,15 +76,15 @@ args = parser.parse_args()
 if __name__ == "__main__":
     
     torch.backends.cudnn.benchmark=True
-    
-    
+
     train_dl, validate_dl, test_dl = get_dataloader(args)
 
     model = get_model(args)
     model = get_initializer(model, args)
     
-    if args.pruning_method:
+    if args.sparsity or args.degree:
         model = get_pruner(model, args)
+        
     print(f'Model sparsity = {measure_sparsity(model)}')
     model = get_plmodule(model, args)
     callbacks = get_callback(args)

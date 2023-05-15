@@ -1,11 +1,12 @@
-from sao_utils.ramanujan_constructions import *
+from sao_utils.ramanujan_constructions import Ramanujan_Constructions
 from .delta import *
 
 
-class ECO_Module:
+class ECO_Module(Ramanujan_Constructions):
     def __init__(
         self,
         module: nn.Module,
+        gain: int = 1,
         sparsity: float = None,
         degree: int = None,
         method: str = "SAO",
@@ -22,6 +23,7 @@ class ECO_Module:
         self.in_channels = in_channels  # Input channel of the model, not the module
         self.num_classes = num_classes
         self.method = method
+        self.gain = gain
         self.activation = activation
 
     def _ortho_gen(self, rows, columns) -> torch.tensor:
@@ -127,53 +129,7 @@ def ECO_Constructor(module, **kwargs):
     return ECO_Module(module, **kwargs)()
 
 
-def ECO_Init(model, gain, **kwargs):
-    for _, module in model.named_modules():
-        if isinstance(module, nn.Conv2d):
-            module.weight = nn.Parameter(ECO_Constructor(module, **kwargs) * gain)
-        elif isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, 1)
 
-    return model
-
-
-def Delta_ECO_Init(model, gain, **kwargs):
-    delta_kwargs = {
-        key: value
-        for key, value in kwargs.items()
-        if key in ["activation", "in_channels", "num_classes"]
-    }
-    for _, module in model.named_modules():
-        if isinstance(module, nn.Conv2d) and (
-            module.in_channels == 3 or module.stride[0] > 1
-        ):
-            module.weight = nn.Parameter(
-                Delta_Constructor(module, **delta_kwargs) * gain
-            )
-        elif isinstance(module, nn.Conv2d) and (
-            module.in_channels > 3 and module.stride[0] == 1
-        ):
-            module.weight = nn.Parameter(ECO_Constructor(module, **kwargs) * gain)
-        elif isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, 1)
-
-    return model
-
-def Delta_Init(model, gain, **kwargs):
-    delta_kwargs = {
-        key: value
-        for key, value in kwargs.items()
-        if key in ["activation", "in_channels", "num_classes"]
-    }
-    for _, module in model.named_modules():
-        if isinstance(module, nn.Conv2d):
-            module.weight = nn.Parameter(
-                Delta_Constructor(module, **delta_kwargs) * gain
-            )
-        elif isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, 1)
-
-    return model
 
 
 

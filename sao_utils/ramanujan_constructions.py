@@ -42,7 +42,7 @@ class Ramanujan_Constructions:
         if (
             self.activation == "relu"
             and self.in_ != 3  # Input convolutional layer
-            and self.out_ != 100  # Output linear layer
+            #and self.out_ != 100  # Output linear layer
         ):
             self.rows = self.rows // 2
             self.columns = self.columns // 2
@@ -171,82 +171,3 @@ class Ramanujan_Constructions:
             else self.ramanujan_mask
         )
         return (weights.T, mask.T) if self.out_ > self.in_ else (weights, mask)
-
-
-class Ramanujan_Construction:
-    def __init__(
-        self,
-        model,
-        gain: int = 1,
-        sparsity: float = None,
-        degree: int = None,
-        method: str = "SAO",
-        activation="relu",
-        same_mask=False,
-        in_channels: int = 3,
-        num_classes: int = 100,
-    ):
-        """_summary_
-
-        Args:
-            model (_type_): _description_
-            degree (int): _description_
-            mode (str, optional): _description_. Defaults to "O".
-            num_classes (int, optional): _description_. Defaults to 10.
-        """
-        self.model = model
-        self.sparsity = sparsity
-        self.degree = degree
-        self.in_channels = in_channels
-        self.num_classes = num_classes
-        self.method = method
-        self.activation = activation
-        self.same_mask = same_mask
-        self.gain = gain
-
-    def _ramanujan_structure(self, module):
-        constructor = Ramanujan_Constructions(
-            module,
-            sparsity=self.sparsity,
-            degree=self.degree,
-            method=self.method,
-            same_mask=self.same_mask,
-            activation=self.activation,
-        )
-        return constructor()
-
-    def _sao_linear(self, module):
-        return self._ramanujan_structure(module)
-
-    def _sao_delta(self, module):
-        sao_matrix, sao_mask = self._ramanujan_structure(module)
-        sao_delta_weights = torch.zeros_like(module.weight).to("cuda")
-        sao_delta_weights[:, :, 1, 1] = sao_matrix
-        sao_delta_mask = torch.zeros_like(module.weight).to("cuda")
-
-        for i, j in product(range(module.out_channels), range(module.in_channels)):
-            sao_delta_mask[i, j] = sao_mask[i, j]
-
-        return sao_delta_weights, sao_delta_mask
-
-    def _sao_init(self):
-        for _, module in self.model.named_modules():
-            if (
-                isinstance(module, nn.Linear)
-                and module.out_features != self.num_classes
-            ):
-                weight, mask = self._sao_linear(module)
-                mask = torch.abs(mask)
-                module.weight = nn.Parameter(weight * self.gain)
-                torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
-
-            elif isinstance(module, nn.Conv2d) and module.in_channels != 3:
-                weight, mask = self._sao_delta(module)
-                mask = torch.abs(mask)
-                module.weight = nn.Parameter(weight * self.gain)
-                torch.nn.utils.prune.custom_from_mask(module, "weight", mask)
-
-        return self.model
-
-    def __call__(self):
-        return self._sao_init()
