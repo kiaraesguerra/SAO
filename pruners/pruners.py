@@ -19,7 +19,7 @@ def Standard_Pruning_Func(model, **kwargs):
 
 
 def get_pruner(model, args):
-    if args.pruning_method in ramanujan_ and "eco" in args.model:
+    if args.pruning_method in ramanujan_ and "lip" in args.model:
         model = Delta_ECO_Init(
             model,
             gain=args.gain,
