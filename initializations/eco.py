@@ -2,7 +2,7 @@ from .ramanujan_constructions import Ramanujan_Constructions
 from .delta import *
 
 
-class ECO_Module(Ramanujan_Constructions):
+class ECO_Module(Ramanujan_Constructions, Base):
     def __init__(
         self,
         module: nn.Module,
