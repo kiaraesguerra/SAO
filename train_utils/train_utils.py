@@ -3,9 +3,9 @@ import torch
 from torchmetrics import Accuracy
 
 from .utils import *
-from optimizers.optimizers import *
-from schedulers.schedulers import *
-from criterions.criterions import *
+from .optimizers import *
+from .schedulers import *
+from .criterions import *
 
 
 def get_plmodule(model, args):
@@ -39,7 +39,7 @@ class Model(LightningModule):
         self.log("train/loss", loss, on_epoch=True, prog_bar=True, logger=True)
         self.log(
             "train/acc", self.train_accuracy, on_epoch=True, prog_bar=True, logger=True
-        )        
+        )
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -59,14 +59,10 @@ class Model(LightningModule):
         loss = self.criterion(logits, y)
         preds = torch.argmax(logits, dim=1)
         self.test_accuracy.update(preds, y)
-        #self.log("test/loss", loss, on_epoch=True, prog_bar=True, logger=True)
+        # self.log("test/loss", loss, on_epoch=True, prog_bar=True, logger=True)
         self.log(
             "test/acc", self.test_accuracy, on_epoch=True, prog_bar=True, logger=True
-            )
+        )
 
     def configure_optimizers(self):
         return [self.optimizer], [{"scheduler": self.scheduler, "interval": "epoch"}]
-
-    # def on_fit_end(self):
-    #     sparsity, nonzeros = measure_sparsity(self.model.to('cuda'))
-    #     print(f'Sparsity = {sparsity}, nonzeros = {nonzeros}')

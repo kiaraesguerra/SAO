@@ -3,8 +3,8 @@ import torch.nn.utils.prune as prune
 
 
 def measure_sparsity(model):
-    num_zeros = torch.tensor(0).to('cuda')
-    num_elements = torch.tensor(0).to('cuda')
+    num_zeros = torch.tensor(0).to("cuda")
+    num_elements = torch.tensor(0).to("cuda")
 
     for _, module in model.named_modules():
         if isinstance(module, torch.nn.Conv2d):

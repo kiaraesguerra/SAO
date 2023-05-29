@@ -1,15 +1,16 @@
 import argparse
-from dataloaders.dataloaders import get_dataloader
-from callbacks.callbacks import get_callback
-from loggers.loggers import get_logger
+from train_utils.dataloaders import get_dataloader
+from train_utils.callbacks import get_callback
+from train_utils.loggers import get_logger
 from train_utils.models import get_model
-from pruners.pruners import get_pruner
+from train_utils.utils import remove_parameters, measure_sparsity
 from train_utils.train_utils import get_plmodule
+from pruners.pruners import get_pruner
 from initializations.initializations import get_initializer
 from pytorch_lightning import Trainer
 import models
 import torch
-from train_utils.utils import remove_parameters, measure_sparsity
+
 
 model_names = sorted(
     name
@@ -89,7 +90,6 @@ if __name__ == "__main__":
     model = get_plmodule(model, args)
     callbacks = get_callback(args)
     logger = get_logger(args)
-
     trainer = Trainer(
         max_epochs=args.epochs,
         accelerator="gpu",
@@ -99,18 +99,11 @@ if __name__ == "__main__":
 
     trainer.fit(model, train_dl, validate_dl, ckpt_path=args.ckpt_path)
     trainer.test(dataloaders=test_dl, ckpt_path=args.ckpt_path)
-    
     print(f'Model sparsity = {measure_sparsity(model)}')
-    
-    ckpt_path = callbacks[0].best_model_path  # Needs to be refactored
+    ckpt_path = callbacks[0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
     
-    
-    
-    
-    
-
     if args.pruning_method:
         remove_parameters(model)
     torch.save(

@@ -14,19 +14,9 @@ class Ramanujan_Constructions:
         degree: int = None,
         method: str = "SAO",
         same_mask: bool = True,
-        activation: str = "tanh",
+        activation: str = "relu",
         device: str = "cuda",
     ):
-        """_summary_
-
-        Args:
-            module (nn.Module): The module to be processed
-            degree (int): _description_
-            mode (str, optional): _description_. Defaults to "O".
-            activation (str, optional): _description_. Defaults to "tanh".
-            device (str, optional): _description_. Defaults to "cuda".
-        """
-
         self.in_ = module.weight.shape[1]
         self.out_ = module.weight.shape[0]
         self.rows = min(self.out_, self.in_)
@@ -39,11 +29,7 @@ class Ramanujan_Constructions:
         self.same_mask = same_mask
         self.ramanujan_mask = None
 
-        if (
-            self.activation == "relu"
-            and self.in_ != 3  # Input convolutional layer
-            #and self.out_ != 100  # Output linear layer
-        ):
+        if self.activation == "relu" and self.in_ != 3:
             self.rows = self.rows // 2
             self.columns = self.columns // 2
             self.degree = self.degree // 2
@@ -52,7 +38,7 @@ class Ramanujan_Constructions:
         larger_dim = max(self.in_, self.out_)
         return int((1 - self.sparsity) * larger_dim)
 
-    def _relu_util(self, matrix):
+    def _concat(self, matrix):
         W = torch.concat(
             [
                 torch.concat([matrix, torch.negative(matrix)], axis=0),
@@ -114,16 +100,16 @@ class Ramanujan_Constructions:
             return torch.rand(self.degree, self.degree).to(self.device)
 
     def _assign_values(self):
-        """_summary_
+        """This function assigns the values to the Ramanujan mask.
 
         Returns:
-            _type_: _description_
+            Tensor: The SAO matrix
         """
-        # if self.ramanujan_mask is not None:
-        #     ramanujan_mask = self.ramanujan_mask
-        # else:
-        ramanujan_mask = self._block_construct()
-        #ramanujan_mask = torch.abs(ramanujan_mask)
+        if self.same_mask and self.ramanujan_mask is not None:
+            ramanujan_mask = self.ramanujan_mask
+        else:
+            ramanujan_mask = self._block_construct()
+
         self.ramanujan_mask = ramanujan_mask
 
         c = int(torch.sum(ramanujan_mask, 0)[0])
@@ -159,15 +145,30 @@ class Ramanujan_Constructions:
 
         return sao_matrix
 
+    def _ramanujan_structure(self):
+        constructor = Ramanujan_Constructions(
+            self.module,
+            sparsity=self.sparsity,
+            degree=self.degree,
+            method=self.method,
+            same_mask=self.same_mask,
+            activation=self.activation,
+        )
+        return constructor
+
     def __call__(self):
         weights = (
-            self._relu_util(self._assign_values())
+            self._concat(self._assign_values())
             if self.activation == "relu"
             else self._assign_values()
         )
         mask = (
-            self._relu_util(self.ramanujan_mask)
+            self._concat(self.ramanujan_mask)
             if self.activation == "relu"
             else self.ramanujan_mask
         )
-        return (weights.T, mask.T) if self.out_ > self.in_ else (weights, mask)
+        return (
+            (weights.T, torch.abs(mask.T))
+            if self.out_ > self.in_
+            else (weights, torch.abs(mask))
+        )

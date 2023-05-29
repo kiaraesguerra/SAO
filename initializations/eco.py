@@ -1,4 +1,4 @@
-from sao_utils.ramanujan_constructions import Ramanujan_Constructions
+from .ramanujan_constructions import Ramanujan_Constructions
 from .delta import *
 
 
@@ -10,63 +10,28 @@ class ECO_Module(Ramanujan_Constructions):
         sparsity: float = None,
         degree: int = None,
         method: str = "SAO",
-        activation: str = "tanh",
+        activation: str = "relu",
         in_channels: int = 3,
-        num_classes: int = 10,
+        num_classes: int = 100,
     ):
         self.module = module
         self.kernel_size = module.kernel_size[0]
         self.in_ch = module.in_channels
         self.out_ch = module.out_channels
         self.sparsity = sparsity
-        self.degree = degree if self.sparsity is None else self._degree_from_sparsity()
-        self.in_channels = in_channels  # Input channel of the model, not the module
+        self.degree = degree
+        self.in_channels = in_channels
         self.num_classes = num_classes
         self.method = method
         self.gain = gain
         self.activation = activation
-
-    def _ortho_gen(self, rows, columns) -> torch.tensor:
-        rand_matrix = torch.randn((max(rows, columns), min(rows, columns)))
-        q, _ = torch.qr(rand_matrix)
-        orthogonal_matrix = q[:, :columns]
-        return orthogonal_matrix.T if columns > rows else orthogonal_matrix
-
-    def _concat(self, matrix) -> torch.tensor:
-        W = torch.concat(
-            [
-                torch.concat([matrix, torch.negative(matrix)], axis=0),
-                torch.concat([torch.negative(matrix), matrix], axis=0),
-            ],
-            axis=1,
-        )
-        return W
-
-    def _ortho_generator(self) -> torch.tensor:
-        if self.activation == "relu" and self.in_ch != 3:  # Input convolutional layer
-            rows = self.out_ch // 2
-            columns = self.in_ch // 2
-            orthogonal_matrix = self._concat(self._ortho_gen(rows, columns))
-
-        else:
-            rows = self.out_ch
-            columns = self.in_ch
-            orthogonal_matrix = self._ortho_gen(rows, columns)
-
-        return orthogonal_matrix
-
-    def _degree_from_sparsity(self):
-        larger_dim = max(self.in_ch, self.out_ch)
-        return int((1 - self.sparsity) * larger_dim)
 
     def _unique_ortho_tensor(self) -> torch.tensor:
         L = (self.kernel_size**2 + 1) // 2
         ortho_tensor = torch.zeros(L, self.out_ch, self.in_ch)
 
         if self.degree is not None and self.in_ch > 3:
-            constructor = Ramanujan_Constructions(
-                self.module, degree=self.degree, activation=self.activation
-            )
+            constructor = self._ramanujan_structure()
 
         for i in range(L):
             ortho_tensor[i] = (
@@ -127,9 +92,3 @@ class ECO_Module(Ramanujan_Constructions):
 
 def ECO_Constructor(module, **kwargs):
     return ECO_Module(module, **kwargs)()
-
-
-
-
-
-

@@ -3,5 +3,3 @@ from .tiny_resnet import *
 from .vanilla_cnn import *
 from .vgg import *
 from .vanilla_cnn_eco import *
-#from .lip_convnets import *
-#from .vanlip import *

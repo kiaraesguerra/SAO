@@ -1,5 +1,6 @@
 from .init_calls import *
 
+
 def get_initializer(model, args):
     if args.weight_init == "eco":
         print("Initializing model with ECO")
@@ -26,7 +27,7 @@ def get_initializer(model, args):
             num_classes=args.num_classes,
         )
 
-    elif args.weight_init == 'delta':
+    elif args.weight_init == "delta":
         print("Initializing model with Delta")
         model = Delta_Init(
             model,
