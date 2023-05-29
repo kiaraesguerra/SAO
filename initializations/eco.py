@@ -25,6 +25,7 @@ class ECO_Module(Ramanujan_Constructions, Base):
         self.method = method
         self.gain = gain
         self.activation = activation
+        
 
     def _unique_ortho_tensor(self) -> torch.tensor:
         L = (self.kernel_size**2 + 1) // 2

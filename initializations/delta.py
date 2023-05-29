@@ -27,14 +27,15 @@ class Delta_Module(Ramanujan_Constructions, Base):
         self.activation = activation
         self.same_mask = same_mask
         self.gain = gain
-
+        
+        
     def _sao_linear(self):
         constructor = self._ramanujan_structure()
         return constructor()
 
     def _sao_delta(self):
         constructor = self._ramanujan_structure()
-        sao_matrix, sao_mask = constructor
+        sao_matrix, sao_mask = constructor()
         sao_delta_weights = torch.zeros_like(self.module.weight).to("cuda")
         sao_delta_weights[:, :, 1, 1] = sao_matrix
         sao_delta_mask = torch.zeros_like(self.module.weight).to("cuda")

@@ -144,17 +144,18 @@ class Ramanujan_Constructions:
             sao_matrix[indices] = identical_row
 
         return sao_matrix
-
+    
     def _ramanujan_structure(self):
         constructor = Ramanujan_Constructions(
             self.module,
             sparsity=self.sparsity,
             degree=self.degree,
             method=self.method,
-            same_mask=self.same_mask,
+            same_mask=True,
             activation=self.activation,
         )
         return constructor
+
 
     def __call__(self):
         weights = (
