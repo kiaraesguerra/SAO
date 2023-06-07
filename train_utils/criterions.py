@@ -2,13 +2,11 @@ import torch.nn as nn
 
 
 def get_criterion(args):
-    if args.criterion in ["CrossEntropy", "crossentropy"]:
-        criterion = nn.CrossEntropyLoss(label_smoothing=args.label_smoothing)
+    criterion_mapping = {
+        "crossentropy": nn.CrossEntropyLoss(label_smoothing=args.label_smoothing),
+        "bce": nn.BCELoss(),
+        "l1": nn.L1Loss(),
+    }
 
-    elif args.criterion in ["BCE", "bce"]:
-        criterion = nn.BCELoss()
-
-    elif args.criterion in ["L1", "l1"]:
-        criterion = nn.L1Loss()
-
+    criterion = criterion_mapping.get(args.criterion.lower(), None)
     return criterion
