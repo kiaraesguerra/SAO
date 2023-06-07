@@ -1,25 +1,56 @@
+<hr>
+<div align="center">
 
-<h1>Sparsity-Aware Orthogonal Initialization</h2>
+# Sparsity-Aware Orthogonal Initialization
+
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
+<a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
+<a href="https://github.com/DeepVoltaire/AutoAugment.git"><img alt="Template" src="https://img.shields.io/badge/-AutoAugment-017F2F?style=flat&logo=github&labelColor=gray"></a>
+
 
 PyTorch implementation of SAO from the paper Sparsity-Aware Orthogonal Initialization of Deep Neural Networks by Esguerra et al.
 
-<br>
-<h2> 1. Dense Vanilla CNN </h2>
+</div>
+
+# Overview
+
+Pruning is a common technique to reduce the number of parameters of a deep neural network. However, this technique can have adverse effects such as network disconnection and loss of dynamical isometry.
+
+Thus, our solution is to leverage expander graphs (sparse yet highly-connected graphs) to form the sparse structure and then orthogonalize this structure through appropriate weight assignments.
 
 
 
+![alt text](SAO.png)
+
+# Installation
+
+```bash
+git clone https://github.com/kiaraesguerra/SAO
+cd SAO
+conda create -n myenv python=3.9
+conda activate myenv
+pip install -r requirements.txt
+```
+
+# Features
+* Models: vanilla CNN, dilated vanilla CNN (ECO)
+* Datasets: CIFAR-10, CIFAR-100, CINIC-10
+* Initialization methods: kaiming-normal, delta-orthogonal initialization, explicitly-constructed orthogonal convolutions
+* Pruning/Sparse construction methods: magnitude pruning, random pruning, Ramanujan pruning, SAO, Ramanujan normal, Ramanujan uniform
 
 
 
+# Training
+
+### 1. Dense Vanilla CNN
 
 ```
 python main.py --model van32 --width 128 --activation 'relu' --weight-init 'delta' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
 ```
 
+### 2. SAO-Delta on Vanilla CNN
 
-<h2> 2. SAO-Delta on Vanilla CNN</h2>
-
-When implement SAO, the user can specify either the sparsity:
+When implementing SAO, the user can specify either the sparsity:
 
 ```
 python main.py --model van32 --width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
