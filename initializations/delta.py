@@ -33,7 +33,7 @@ class Delta_Module(Ramanujan_Constructions, Base):
         constructor = self._ramanujan_structure()
         return constructor()
 
-    def _sao_delta(self):
+    def _sao_delta(self) -> tuple[torch.tensor, torch.tensor]:
         constructor = self._ramanujan_structure()
         sao_matrix, sao_mask = constructor()
         sao_delta_weights = torch.zeros_like(self.module.weight).to("cuda")
@@ -47,7 +47,7 @@ class Delta_Module(Ramanujan_Constructions, Base):
 
         return sao_delta_weights, sao_delta_mask
 
-    def _delta(self):
+    def _delta(self) -> torch.tensor:
         weights = self._ortho_generator()
         delta_weights = torch.zeros_like(self.module.weight).to("cuda")
         delta_weights[:, :, 1, 1] = weights
