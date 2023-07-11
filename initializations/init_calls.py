@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 from initializations.eco import ECO_Constructor
 from initializations.delta import Delta_Constructor
-
+from initializations.LS import LS_Constructor
 
 def Delta_Init(model, **kwargs):
     for _, module in model.named_modules():
@@ -48,6 +48,26 @@ def ECO_Init(model, **kwargs):
             torch.nn.init.orthogonal_(module.weight, 1)
 
     return model
+
+
+def LS_Init(model, **kwargs):
+    for _, module in model.hidden_layers_S.named_modules():
+        if isinstance(module, nn.Linear):
+            vals = LS_Constructor(module, **kwargs)
+            if isinstance(vals, tuple):
+                module.weight = nn.Parameter(vals[0])
+                torch.nn.utils.prune.custom_from_mask(
+                    module, "weight", torch.abs(vals[1])
+                )
+            else:
+                module.weight = nn.Parameter(vals)
+                
+    for _, module in model.hidden_layers_L.named_modules():
+        if isinstance(module, nn.Linear):
+            torch.nn.init.orthogonal_(module.weight, 1)
+
+    return model
+
 
 
 def Kaiming_Init(model, args):

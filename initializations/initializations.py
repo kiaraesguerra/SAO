@@ -25,6 +25,19 @@ def get_initializer(model, args):
             in_channels=args.in_channels,
             num_classes=args.num_classes,
         )
+        
+        
+    elif args.weight_init == "ls":
+        model = LS_Init(
+            model,
+            method=args.pruning_method,
+            gain=args.gain,
+            sparsity=args.sparsity,
+            degree=args.degree,
+            activation=args.activation,
+            in_channels=args.in_channels,
+            num_classes=args.num_classes,
+        )
 
     elif args.weight_init == "delta":
         model = Delta_Init(
