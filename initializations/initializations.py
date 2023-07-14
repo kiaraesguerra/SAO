@@ -38,6 +38,12 @@ def get_initializer(model, args):
             in_channels=args.in_channels,
             num_classes=args.num_classes,
         )
+        
+    elif args.weight_init == "ls_standard":
+        model = LS_Standard_Init(
+            model,
+            sparsity=args.sparsity
+        )
 
     elif args.weight_init == "delta":
         model = Delta_Init(

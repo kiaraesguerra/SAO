@@ -70,6 +70,19 @@ def LS_Init(model, **kwargs):
 
 
 
+def LS_Standard_Init(model, sparsity):
+    for _, module in model.hidden_layers_S.named_modules():
+        if isinstance(module, nn.Linear):
+            torch.nn.init.orthogonal_(module.weight, 1)
+            torch.nn.utils.prune.l1_unstructured(module, name="weight", amount=sparsity)
+    for _, module in model.hidden_layers_L.named_modules():
+        if isinstance(module, nn.Linear):
+            torch.nn.init.orthogonal_(module.weight, 1)
+
+    return model
+
+
+
 def Kaiming_Init(model, args):
     for _, module in model.named_modules():
         if isinstance(module, nn.Conv2d):
