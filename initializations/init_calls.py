@@ -50,6 +50,17 @@ def ECO_Init(model, **kwargs):
     return model
 
 
+
+def generate_low_rank_matrix(rows, cols, rank=2):
+    if rank > min(rows, cols):
+        raise ValueError("Rank cannot exceed the minimum dimension.")
+    U = torch.randn(rows, rank)
+    V = torch.randn(rank, cols)
+    matrix = torch.matmul(U, V)
+
+    return matrix
+
+
 def LS_Init(model, **kwargs):
     for _, module in model.hidden_layers_S.named_modules():
         if isinstance(module, nn.Linear):
@@ -64,8 +75,10 @@ def LS_Init(model, **kwargs):
                 
     for _, module in model.hidden_layers_L.named_modules():
         if isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, 1)
-
+            low_rank_matrix = generate_low_rank_matrix(module.in_features, module.out_features)
+            module.weight = nn.Parameter(low_rank_matrix)
+            
+            #torch.nn.init.orthogonal_(module.weight, 1)
     return model
 
 
