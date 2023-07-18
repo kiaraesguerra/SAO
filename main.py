@@ -68,6 +68,7 @@ parser.add_argument("--dirpath", type=str, default="results")
 parser.add_argument("--gain", type=float, default=1.0)
 parser.add_argument("--callbacks", type=list, default=["checkpoint"])
 parser.add_argument("--in-channels", type=int, default=3)
+parser.add_argument("--rank", type=int, default=None)
 
 args = parser.parse_args()
 
@@ -81,6 +82,8 @@ if __name__ == "__main__":
     model = get_model(args)
     model = get_initializer(model, args)
     
+    
+    breakpoint()
     if args.sparsity or args.degree:
         model = get_pruner(model, args)
         

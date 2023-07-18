@@ -3,6 +3,7 @@ import torch
 from initializations.eco import ECO_Constructor
 from initializations.delta import Delta_Constructor
 from initializations.LS import LS_Constructor
+from initializations.lowrank import LowRankInitializer
 
 def Delta_Init(model, **kwargs):
     for _, module in model.named_modules():
@@ -95,7 +96,6 @@ def LS_Standard_Init(model, sparsity):
     return model
 
 
-
 def Kaiming_Init(model, args):
     for _, module in model.named_modules():
         if isinstance(module, nn.Conv2d):
@@ -111,23 +111,10 @@ def Kaiming_Init(model, args):
     return model
 
 
-def low_rank(module, rank):
-    u, s, v = torch.linalg.svd(module.weight)
-    U_layer = nn.Linear(module.out_features, rank)
-    W_layer = nn.Linear(rank, module.in_features)
-    U_layer.weight = nn.Parameter(u[:, 0:rank])
-    W_layer.weight = nn.Parameter(s[0:rank]@v[0:rank])
-    
-    revised_module = nn.Sequential(
-        U_layer,
-        W_layer
-    )
-    return revised_module
+def LR_Init(model, rank):
+    low_rank_initializer = LowRankInitializer(model, rank)
+    model.input_layer = nn.Linear(in_features=3072, out_features=rank)
+    model.output_layer = nn.Linear(in_features=rank, out_features=10)
+    low_rank_initializer.initialize_low_rank()
+    return model
 
-
-def LR_Init(model, args):
-    for module_name, module in model.hidden_layers.named_modules():
-        if isinstance(module, nn.Linear):
-            torch.nn.init.orthogonal_(module.weight, 1)
-            model.hidden_layers._modules[module_name] = low_rank(module, args.rank)
-    
