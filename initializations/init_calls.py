@@ -128,5 +128,6 @@ def low_rank(module, rank):
 def LR_Init(model, args):
     for module_name, module in model.hidden_layers.named_modules():
         if isinstance(module, nn.Linear):
+            torch.nn.init.orthogonal_(module.weight, 1)
             model.hidden_layers._modules[module_name] = low_rank(module, args.rank)
     
