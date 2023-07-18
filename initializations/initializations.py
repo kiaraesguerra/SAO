@@ -44,6 +44,12 @@ def get_initializer(model, args):
             model,
             sparsity=args.sparsity
         )
+        
+    elif args.weight_init == "lr":
+        model = LR_Init(
+            model,
+            rank=args.rank
+        )
 
     elif args.weight_init == "delta":
         model = Delta_Init(
