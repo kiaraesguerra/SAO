@@ -15,16 +15,16 @@ def get_model(args):
             model = models.__dict__[args.model](
                 num_classes=args.num_classes, pretrained=True
             )
-            
+
     elif "mlp" in args.model:
-        model = models.__dict__[args.model](hidden_width=args.width,
-                                            num_classes=args.num_classes,
-                                            activation=args.activation,
-                                            image_size=args.size,
-                                            in_channels=args.in_channels,
+        model = models.__dict__[args.model](
+            hidden_width=args.width,
+            num_classes=args.num_classes,
+            activation=args.activation,
+            image_size=args.size,
+            in_channels=args.in_channels,
         )
-                                            
-            
+
     else:
         print("=> creating model '{}'".format(args.model))
         model = models.__dict__[args.model](

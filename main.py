@@ -56,11 +56,7 @@ parser.add_argument("--label-smoothing", type=float, default=0)
 parser.add_argument("--save-top-k", type=int, default=1)
 parser.add_argument("--save-last", type=bool, default=True)
 parser.add_argument("--filename", type=str, default="best")
-parser.add_argument(
-    "--pruning-method",
-    type=str,
-    default=None
-)
+parser.add_argument("--pruning-method", type=str, default=None)
 parser.add_argument("--degree", type=int, default=None)
 parser.add_argument("--sparsity", type=float, default=None)
 parser.add_argument("--activation", type=str, default="tanh", choices=["tanh", "relu"])
@@ -68,26 +64,21 @@ parser.add_argument("--dirpath", type=str, default="results")
 parser.add_argument("--gain", type=float, default=1.0)
 parser.add_argument("--callbacks", type=list, default=["checkpoint"])
 parser.add_argument("--in-channels", type=int, default=3)
-parser.add_argument("--rank", type=int, default=None)
 
 args = parser.parse_args()
 
 
 if __name__ == "__main__":
-    
-    torch.backends.cudnn.benchmark=True
+    torch.backends.cudnn.benchmark = True
 
     train_dl, validate_dl, test_dl = get_dataloader(args)
 
     model = get_model(args)
     model = get_initializer(model, args)
-    
-    
-    breakpoint()
+
     if args.sparsity or args.degree:
         model = get_pruner(model, args)
-        
-    print(f'Model sparsity = {measure_sparsity(model)}')
+
     model = get_plmodule(model, args)
     callbacks = get_callback(args)
     logger = get_logger(args)
@@ -100,11 +91,11 @@ if __name__ == "__main__":
 
     trainer.fit(model, train_dl, validate_dl, ckpt_path=args.ckpt_path)
     trainer.test(dataloaders=test_dl, ckpt_path=args.ckpt_path)
-    print(f'Model sparsity = {measure_sparsity(model)}')
+    print(f"Model sparsity = {measure_sparsity(model)}")
     ckpt_path = callbacks[0].best_model_path
     model_checkpoint = torch.load(ckpt_path)
     model.load_state_dict(model_checkpoint["state_dict"])
-    
+
     if args.pruning_method:
         remove_parameters(model)
     torch.save(
