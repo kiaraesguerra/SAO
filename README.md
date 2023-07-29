@@ -8,7 +8,11 @@
 <a href="https://github.com/DeepVoltaire/AutoAugment.git"><img alt="Template" src="https://img.shields.io/badge/-AutoAugment-017F2F?style=flat&logo=github&labelColor=gray"></a>
 
 
-PyTorch implementation of SAO from the paper Sparsity-Aware Orthogonal Initialization of Deep Neural Networks by Esguerra et al.
+PyTorch implementation of SAO from the paper 
+<a href="https://ieeexplore.ieee.org/document/10181312"> Sparsity-Aware Orthogonal Initialization of Deep Neural Networks by Esguerra et al. </a>
+
+
+
 
 </div>
 
