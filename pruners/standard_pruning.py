@@ -5,6 +5,10 @@ from itertools import product
 
 
 def prune_vanilla_kernelwise(param, sparsity, fn_importance=lambda x: x.norm(1, -1)):
+    """
+    Code acquired from https://github.com/synxlin/nn-compression.git
+    """
+
     assert param.dim() >= 3
     sparsity = min(max(0.0, sparsity), 1.0)
     if sparsity == 1.0:

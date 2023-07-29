@@ -1,5 +1,10 @@
 import torch.nn as nn
 
+"""
+Code for the model acquired from https://github.com/yl-1993/ConvDeltaOrthogonal-Init
+"""
+
+
 __all__ = [
     "van4",
     "van8",
