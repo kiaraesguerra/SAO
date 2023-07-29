@@ -103,8 +103,7 @@ class ECO_Module(Ramanujan_Constructions, Base):
             A[p, q] = A[equivi, equivj]
 
         weight_mat = torch.zeros(self.out_ch, self.in_ch, k, k)
-        
-        
+
         for i, j in product(range(self.out_ch), range(self.in_ch)):
             weight_mat[i, j] = torch.fft.ifft2(A[:, :, i, j])
 

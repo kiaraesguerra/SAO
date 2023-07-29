@@ -27,8 +27,7 @@ class Delta_Module(Ramanujan_Constructions, Base):
         self.activation = activation
         self.same_mask = same_mask
         self.gain = gain
-        
-        
+
     def _sao_linear(self):
         constructor = self._ramanujan_structure()
         return constructor()

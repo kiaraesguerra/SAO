@@ -30,7 +30,7 @@ def get_pruner(model, args):
             in_channels=args.in_channels,
             num_classes=args.num_classes,
         )
-        
+
     elif args.pruning_method in ramanujan_:
         model = Delta_Init(
             model,
@@ -41,8 +41,8 @@ def get_pruner(model, args):
             activation=args.activation,
             in_channels=args.in_channels,
             num_classes=args.num_classes,
-        )       
-        
+        )
+
     elif args.pruning_method in standard_:
         model = Standard_Pruning_Func(
             model,
@@ -52,6 +52,5 @@ def get_pruner(model, args):
             in_channels=args.in_channels,
             num_classes=args.num_classes,
         )
-        
 
     return model
