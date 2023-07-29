@@ -33,7 +33,6 @@ pip install -r requirements.txt
 ```
 
 # Features
-* Models: vanilla CNN, dilated vanilla CNN (ECO)
 * Datasets: CIFAR-10, CIFAR-100, CINIC-10
 * Initialization methods: kaiming-normal, delta-orthogonal initialization, explicitly-constructed orthogonal convolutions
 * Pruning/Sparse construction methods: magnitude pruning, random pruning, Ramanujan pruning, SAO, Ramanujan normal, Ramanujan uniform
@@ -63,3 +62,6 @@ python main.py --model van32 --width 128 --activation 'relu' --pruning-method SA
 ```
 
 Note: When using Tanh, the minimum degree is 2. This should also be noted when specifying the sparsity, such that the sparsity should not result in a degree lower than 2, e.g., for Conv2d(16, 16), the maximum sparsity is 87.50%. For ReLU, the minimum degree is 4, where for Conv2d(16, 16), the maximum sparsity is 75.00%.
+
+
+
