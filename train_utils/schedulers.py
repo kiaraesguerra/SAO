@@ -21,7 +21,7 @@ def get_scheduler(optimizer, args):
         scheduler = warmup_scheduler.GradualWarmupScheduler(
             optimizer,
             multiplier=1.0,
-            total_epoch=args.warmup_epoch,
+            total_epoch=args.warmup_epochs,
             after_scheduler=base_scheduler,
         )
     else:
