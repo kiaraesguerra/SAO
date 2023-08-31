@@ -38,4 +38,4 @@ class Base:
             columns = self.in_channels
             orthogonal_matrix = self._ortho_gen(rows, columns)
 
-        return orthogonal_matrix
+        return orthogonal_matrix.to('cuda')

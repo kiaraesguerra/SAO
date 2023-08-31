@@ -27,7 +27,7 @@ def get_pruner(model, args):
             sparsity=args.sparsity,
             degree=args.degree,
             activation=args.activation,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
 
@@ -39,7 +39,7 @@ def get_pruner(model, args):
             sparsity=args.sparsity,
             degree=args.degree,
             activation=args.activation,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
 
@@ -49,7 +49,7 @@ def get_pruner(model, args):
             pruner=args.pruning_method,
             sparsity=args.sparsity,
             degree=args.degree,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
 

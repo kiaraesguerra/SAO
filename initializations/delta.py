@@ -53,7 +53,7 @@ class Delta_Module(Ramanujan_Constructions, Base):
         delta_weights = torch.zeros_like(self.module.weight).to("cuda")
         delta_weights[:, :, 1, 1] = weights
 
-        return delta_weights
+        return delta_weights.to('cuda')
 
     def __call__(self):
         return (
