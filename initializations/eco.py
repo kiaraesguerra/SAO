@@ -11,16 +11,16 @@ class ECO_Module(Ramanujan_Constructions, Base):
         degree: int = None,
         method: str = "SAO",
         activation: str = "relu",
-        in_channels: int = 3,
+        in_channels_0: int = 3,
         num_classes: int = 100,
     ):
         self.module = module
         self.kernel_size = module.kernel_size[0]
-        self.in_ch = module.in_channels
-        self.out_ch = module.out_channels
+        self.in_channels = module.in_channels
+        self.out_channels = module.out_channels
+        self.in_channels_0 = in_channels_0
         self.sparsity = sparsity
         self.degree = degree
-        self.in_channels = in_channels
         self.num_classes = num_classes
         self.method = method
         self.gain = gain
@@ -37,15 +37,15 @@ class ECO_Module(Ramanujan_Constructions, Base):
         """
 
         L = (self.kernel_size**2 + 1) // 2
-        ortho_tensor = torch.zeros(L, self.out_ch, self.in_ch)
+        ortho_tensor = torch.zeros(L, self.out_channels, self.in_channels)
 
-        if self.degree is not None and self.in_ch > 3:
+        if self.degree is not None and self.in_channels != self.in_channels_0:
             constructor = self._ramanujan_structure()
 
         for i in range(L):
             ortho_tensor[i] = (
                 self._ortho_generator()
-                if (self.degree is None or self.in_ch == 3)
+                if (self.degree is None or self.in_channels == self.in_channels_0)
                 else constructor()[0]  # Get only the weights given by the constructor
             )
 
@@ -91,7 +91,7 @@ class ECO_Module(Ramanujan_Constructions, Base):
         List2 = [x for x in List2 if x not in List1]
 
         ortho_tensor = self._unique_ortho_tensor()
-        A = torch.zeros(k, k, self.out_ch, self.in_ch)
+        A = torch.zeros(k, k, self.out_channels, self.in_channels)
 
         for i in range(len(List1)):
             p, q = List1[i]
@@ -102,9 +102,9 @@ class ECO_Module(Ramanujan_Constructions, Base):
             equivi, equivj = self._give_equiv(p, q)
             A[p, q] = A[equivi, equivj]
 
-        weight_mat = torch.zeros(self.out_ch, self.in_ch, k, k)
+        weight_mat = torch.zeros(self.out_channels, self.in_channels, k, k)
 
-        for i, j in product(range(self.out_ch), range(self.in_ch)):
+        for i, j in product(range(self.out_channels), range(self.in_channels)):
             weight_mat[i, j] = torch.fft.ifft2(A[:, :, i, j])
 
         return weight_mat.to("cuda")

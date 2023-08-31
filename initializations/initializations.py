@@ -11,7 +11,7 @@ def get_initializer(model, args):
             sparsity=args.sparsity,
             degree=args.degree,
             activation=args.activation,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
     elif args.weight_init == "delta-eco":
@@ -22,7 +22,7 @@ def get_initializer(model, args):
             sparsity=args.sparsity,
             degree=args.degree,
             activation=args.activation,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
     elif args.weight_init == "delta":
@@ -33,7 +33,7 @@ def get_initializer(model, args):
             sparsity=args.sparsity,
             degree=args.degree,
             activation=args.activation,
-            in_channels=args.in_channels,
+            in_channels_0=args.in_channels_0,
             num_classes=args.num_classes,
         )
     elif args.weight_init == "kaiming-normal":

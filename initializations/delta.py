@@ -15,18 +15,20 @@ class Delta_Module(Ramanujan_Constructions, Base):
         method: str = "SAO",
         activation: str = "relu",
         same_mask: bool = False,
-        in_channels: int = 3,
+        in_channels_0: int = 3,
         num_classes: int = 100,
     ):
         self.module = module
         self.sparsity = sparsity
         self.degree = degree
-        self.in_channels = in_channels
         self.num_classes = num_classes
         self.method = method
         self.activation = activation
         self.same_mask = same_mask
         self.gain = gain
+        self.in_channels = module.in_channels
+        self.out_channels = module.out_channels
+        self.in_channels_0 = in_channels_0 # This is the number of input channels of the first convolutional layer
 
     def _sao_linear(self):
         constructor = self._ramanujan_structure()
@@ -57,7 +59,7 @@ class Delta_Module(Ramanujan_Constructions, Base):
         return (
             self._sao_delta()
             if (self.degree or self.sparsity)
-            and self.module.in_channels > 3
+            and self.in_channels != self.in_channels_0
             and self.method == "SAO"
             else self._delta()
         )
