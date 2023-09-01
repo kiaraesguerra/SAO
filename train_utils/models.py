@@ -24,6 +24,8 @@ def get_model(args):
             image_size=args.size,
             in_channels=args.in_channels,
         )
+    elif "trial" in args.model:
+        model = models.__dict__[args.model]()
 
     else:
         print("=> creating model '{}'".format(args.model))
