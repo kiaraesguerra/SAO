@@ -5,7 +5,7 @@ import torch.nn.init as init
 
 from torch.autograd import Variable
 
-__all__ = ['ResNet', 'trial1']
+__all__ = ['ResNet', 'trial2']
 
 def _weights_init(m):
     classname = m.__class__.__name__
@@ -29,6 +29,8 @@ class BasicBlock(nn.Module):
         super(BasicBlock, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(planes)
         
         if stride == 1:
             self.sao_1 = nn.Linear(in_planes*out_size**2, 2)
@@ -53,10 +55,12 @@ class BasicBlock(nn.Module):
 
     def forward(self, x):
         out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
         x_sao = x.view(x.size(0), -1)
         x_sao = self.sao_1(x_sao)
         x_sao = self.sao_2(x_sao)
         x_sao = x_sao.view(out.size())
+              
         out += x_sao
         out = F.relu(out)
         return out
@@ -96,5 +100,5 @@ class ResNet(nn.Module):
         return out
 
 
-def trial1():
+def trial2():
     return ResNet(BasicBlock, [3, 3, 3])
