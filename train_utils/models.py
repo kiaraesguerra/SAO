@@ -16,21 +16,16 @@ def get_model(args):
                 num_classes=args.num_classes, pretrained=True
             )
 
-    elif "mlp" in args.model:
+    elif "mlp" in args.model or "cnn" in args.model:
         model = models.__dict__[args.model](
-            hidden_width=args.width,
+            hidden_width=args.hidden_width,
             num_classes=args.num_classes,
             activation=args.activation,
-            image_size=args.size,
-            in_channels=args.in_channels,
+            image_size=args.image_size,
+            num_layers=args.num_layers,
+            in_channels_0=args.in_channels_0,
         )
     elif "trial" in args.model:
         model = models.__dict__[args.model]()
-
-    else:
-        print("=> creating model '{}'".format(args.model))
-        model = models.__dict__[args.model](
-            c=args.width, num_classes=args.num_classes, activation=args.activation
-        )
 
     return model.to(args.device)

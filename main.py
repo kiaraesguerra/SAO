@@ -18,9 +18,10 @@ model_names = sorted(
 )
 parser = argparse.ArgumentParser(description="PyTorch CIFAR-10")
 
-parser.add_argument("--model", "-a", default="van32")
-parser.add_argument("--width", type=int, default=16)
-parser.add_argument("--activation", type=str, default="tanh", choices=["tanh", "relu"])
+parser.add_argument("--model", default="cnn")
+parser.add_argument("--num-layers", type=int, default=16)
+parser.add_argument("--hidden-width", type=int, default=16)
+parser.add_argument("--activation", type=str, default="tanh")
 parser.add_argument("--weight-init", type=str, default="kaiming")
 parser.add_argument("--seed", type=int, default=3407)
 parser.add_argument("--gain", type=float, default=1.0)
