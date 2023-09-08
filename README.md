@@ -45,7 +45,7 @@ pip install -r requirements.txt
 
 # Training
 
-### 1. Dense Vanilla CNN
+### 1. Delta on Vanilla CNN
 
 ```
 python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
@@ -67,6 +67,24 @@ python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu
 
 Note: When using Tanh, the minimum degree is 2. This should also be noted when specifying the sparsity, such that the sparsity should not result in a degree lower than 2, e.g., for Conv2d(16, 16), the maximum sparsity is 87.50%. For ReLU, the minimum degree is 4, where for Conv2d(16, 16), the maximum sparsity is 75.00%.
 
+### 3. ECO on Vanilla CNN
 
+```
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta-eco' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+```
+
+### 4. SAO-ECO on Vanilla CNN
+
+Using sparsity:
+
+```
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+```
+
+using degree:
+
+```
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --degree 4 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+```
 
 
