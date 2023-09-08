@@ -37,9 +37,10 @@ pip install -r requirements.txt
 ```
 
 # Features
-* Datasets: CIFAR-10, CIFAR-100, CINIC-10
-* Initialization methods: kaiming-normal, delta-orthogonal initialization, explicitly-constructed orthogonal convolutions
-* Pruning/Sparse construction methods: magnitude pruning, random pruning, Ramanujan pruning, SAO, Ramanujan normal, Ramanujan uniform
+* Datasets: CIFAR-10, CIFAR-100, <a href="https://paperswithcode.com/dataset/cinic-10">CINIC-10</a>
+* Models: Plain MLP and CNN, <a href="https://arxiv.org/pdf/1512.03385.pdf">ResNet</a>, <a href="https://openreview.net/pdf?id=Zr5W2LSRhD">LipConvNet-N</a>
+* Initialization methods: kaiming-normal, <a href="https://arxiv.org/pdf/1806.05393.pdf"> delta-orthogonal initialization</a>, <a href="https://openreview.net/pdf?id=Zr5W2LSRhD"> explicitly-constructed orthogonal convolutions </a>
+* Pruning/Sparse construction methods: magnitude pruning, random pruning, Ramanujan pruning, Ramanujan normal, Ramanujan uniform, SAO
 
 
 
