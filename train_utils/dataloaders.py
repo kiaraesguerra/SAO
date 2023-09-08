@@ -94,7 +94,7 @@ def get_dataloader(args):
 
 def get_transform(args):
     args.padding = 4
-    args.image_size = 36 if "lip" in args.model else 32
+    args.image_size = 36 if "eco" in args.model else 32
     if args.dataset == "cifar10":
         args.mean, args.std = [0.4914, 0.4822, 0.4465], [0.2470, 0.2435, 0.2616]
     elif args.dataset == "cifar100":

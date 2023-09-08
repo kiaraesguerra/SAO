@@ -1,8 +1,9 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import einops
+from models.activations import activation_dict
 
-__all__ = ["vanlip8", "vanlip12", "vanlip16"]
+__all__ = ["cnn_eco"]
 
 
 class ECO(nn.Module):
@@ -59,87 +60,82 @@ class ECO(nn.Module):
         return z
 
 
-class Vanilla_Lip(nn.Module):
-    def __init__(self, base, c, num_classes=10):
-        super(Vanilla_Lip, self).__init__()
-        self.base = base
-        self.fc = nn.Linear(c, num_classes)
-
+    
+class CNN_ECO(nn.Module):
+    def __init__(self,
+                 image_size,
+                 in_channels_0,
+                 activation,
+                 num_layers,
+                 hidden_width,
+                 num_classes=10):
+        super(CNN_ECO, self).__init__()
+        
+        self.image_size = image_size
+        self.in_channels_0 = in_channels_0
+        self.activation = activation_dict[activation]
+        self.num_layers = num_layers
+        self.hidden_width = hidden_width
+        self.num_classes = num_classes
+        self.feature_extractor = self.make_layers()
+        self.fc = nn.Linear(hidden_width, num_classes)   
+        
     def forward(self, x):
-        x = self.base(x)
+        x = self.feature_extractor(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
-        return x
-
-
-def make_layers(depth, c, activation):
-    assert isinstance(depth, int)
-
-    if activation == "tanh":
-        act = nn.Tanh()
-    elif activation == "relu":
-        act = nn.ReLU()
-
-    layers = []
-    in_channels = 3
-    for stride in [1, 2, 2]:
-        conv2d = nn.Conv2d(in_channels, c, kernel_size=3, padding=1, stride=stride)
-        layers += [conv2d, act]
-        in_channels = c
-    for i in range(depth):
-        if i == depth // 2 - 1:
-            conv2d = ECO(
-                in_channels=c,
-                out_channels=c,
-                kernel_size=3,
-                stride=3,
-                padding=3,
-                dilation=3,
-                padding_mode="circular",
-            )
-        elif i > depth - 2:
-            conv2d = ECO(
-                in_channels=c,
-                out_channels=c,
-                kernel_size=3,
-                stride=3,
-                padding=1,
-                dilation=1,
-                padding_mode="circular",
-            )
-
-        else:
-            if i < 2:
-                conv2d = nn.Conv2d(in_channels, c, kernel_size=3, padding=1, stride=1)
-
-            elif i > depth // 2 - 1:
-                conv2d = nn.Conv2d(
-                    c, c, kernel_size=3, padding=1, dilation=1, padding_mode="circular"
+        return x   
+    
+    def make_layers(self):
+        layers = []
+        in_channels = 3
+        for stride in [1, 2, 2]:
+            conv2d = nn.Conv2d(in_channels, self.hidden_width, kernel_size=3, padding=1, stride=stride)
+            layers += [conv2d, self.activation]
+            in_channels = self.hidden_width
+            
+        for i in range(self.num_layers):
+            if i == self.num_layers // 2 - 1:
+                conv2d = ECO(
+                    in_channels=self.hidden_width,
+                    out_channels=self.hidden_width,
+                    kernel_size=3,
+                    stride=3,
+                    padding=3,
+                    dilation=3,
+                    padding_mode="circular",
                 )
+            elif i > self.num_layers - 2:
+                conv2d = ECO(
+                    in_channels=self.hidden_width,
+                    out_channels=self.hidden_width,
+                    kernel_size=3,
+                    stride=3,
+                    padding=1,
+                    dilation=1,
+                    padding_mode="circular",
+                )
+
             else:
-                conv2d = nn.Conv2d(
-                    c, c, kernel_size=3, padding=3, dilation=3, padding_mode="circular"
-                )
+                if i < 2:
+                    conv2d = nn.Conv2d(in_channels, self.hidden_width, kernel_size=3, padding=1, stride=1)
+                elif i > self.num_layers // 2 - 1:
+                    conv2d = nn.Conv2d(
+                        self.hidden_width, self.hidden_width, kernel_size=3, padding=1, dilation=1, padding_mode="circular"
+                    )
+                else:
+                    conv2d = nn.Conv2d(
+                        self.hidden_width, self.hidden_width, kernel_size=3, padding=3, dilation=3, padding_mode="circular"
+                    )
 
-        layers += [conv2d, act]
+            layers += [conv2d, self.activation]
 
-    return nn.Sequential(*layers), c
+        return nn.Sequential(*layers)
 
 
-def vanlip8(c, activation, **kwargs):
+def cnn_eco(**kwargs):
     """Constructs a 8 layers vanilla model."""
-    model = Vanilla_Lip(*make_layers(8, c, activation), **kwargs)
+    model = CNN_ECO(**kwargs)
     return model
 
-
-def vanlip12(c, activation, **kwargs):
-    """Constructs a 12 layers vanilla model."""
-    model = Vanilla_Lip(*make_layers(12, c, activation), **kwargs)
-    return model
-
-
-def vanlip16(c, activation, **kwargs):
-    """Constructs a 16 layers vanilla model."""
-    model = Vanilla_Lip(*make_layers(16, c, activation), **kwargs)
-    return model
