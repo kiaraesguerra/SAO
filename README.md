@@ -31,6 +31,7 @@ Thus, our solution is to leverage expander graphs (sparse yet highly-connected g
 ```bash
 git clone https://github.com/kiaraesguerra/SAO
 cd SAO
+git clone https://github.com/kiaraesguerra/AutoAugment
 conda create -n myenv python=3.9
 conda activate myenv
 pip install -r requirements.txt
