@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from itertools import product
-from .ramanujan_constructions import Ramanujan_Constructions
+from ..sao_utils.ramanujan_constructions import Ramanujan_Constructions
 from .base import Base
 
 

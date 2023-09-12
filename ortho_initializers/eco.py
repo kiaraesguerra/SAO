@@ -1,8 +1,11 @@
-from .ramanujan_constructions import Ramanujan_Constructions
+from ..sao_utils.ramanujan_constructions import Ramanujan_Constructions
 from .delta import *
 
 
 class ECO_Module(Ramanujan_Constructions, Base):
+    """
+    This class returns the weights required in ECO as seen in the paper: https://openreview.net/pdf?id=Zr5W2LSRhD
+    """
     def __init__(
         self,
         module: nn.Module,

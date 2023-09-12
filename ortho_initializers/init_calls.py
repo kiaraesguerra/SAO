@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
-from initializations.eco import ECO_Constructor
-from initializations.delta import Delta_Constructor
+from ortho_initializers.eco import ECO_Constructor
+from ortho_initializers.delta import Delta_Constructor
 
 
 def Delta_Init(model, **kwargs):
