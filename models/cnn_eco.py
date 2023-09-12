@@ -3,8 +3,6 @@ import torch.nn.functional as F
 import einops
 from models.activations import activation_dict
 
-__all__ = ["cnn_eco"]
-
 
 class ECO(nn.Module):
     def __init__(

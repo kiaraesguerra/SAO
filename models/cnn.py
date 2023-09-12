@@ -1,8 +1,6 @@
 import torch.nn as nn
 from models.activations import activation_dict
 
-__all__ = ["cnn"]
-
 
 class CNN(nn.Module):
     def __init__(

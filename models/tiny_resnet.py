@@ -30,16 +30,6 @@ author, Yerlan Idelbayev.
 import torch.nn as nn
 import torch.nn.functional as F
 
-__all__ = [
-    "ResNet",
-    "resnet20",
-    "resnet32",
-    "resnet44",
-    "resnet56",
-    "resnet110",
-    "resnet1202",
-]
-
 
 class LambdaLayer(nn.Module):
     def __init__(self, lambd):

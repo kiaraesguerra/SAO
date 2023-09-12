@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-from ortho_modules.skew_ortho_conv import SOC
-from ortho_modules.explicit_ortho_conv import ECO
-from utils.custom_activations import *
+from .lipconvnet_utils.skew_ortho_conv import SOC
+from .lipconvnet_utils.explicit_ortho_conv import ECO
+from .activations import *
 
 
 class NormalizedLinear(nn.Linear):
@@ -92,3 +91,7 @@ class LipConvNet(nn.Module):
         x = self.last_layer(x)
         x = x.view(x.shape[0], -1)
         return x
+
+
+def lipconvnet(**kwargs):
+    return LipConvNet(**kwargs)

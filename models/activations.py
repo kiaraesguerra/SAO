@@ -1,4 +1,5 @@
 import torch.nn as nn
+from lipconvnet_utils.maxmin import MaxMin
 
 activation_dict = {
     "tanh": nn.Tanh(),
@@ -20,4 +21,5 @@ activation_dict = {
     "hardtanh": nn.Hardtanh(),
     "tanhshrink": nn.Tanhshrink(),
     "softshrink": nn.Softshrink(),
+    "maxmin": MaxMin(),
 }
