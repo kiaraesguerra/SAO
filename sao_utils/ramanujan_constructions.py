@@ -9,8 +9,9 @@ from itertools import product
 class Ramanujan_Constructions:
     """
     This class returns SAO, RG-U, and RG-N matrices.
-    
+
     """
+
     def __init__(
         self,
         module: nn.Module,
@@ -95,12 +96,12 @@ class Ramanujan_Constructions:
         Returns:
             _type_: _description_
         """
-        if self.method == "SAO":
+        if self.method.lower() == "sao":
             M = np.random.rand(self.degree, self.degree)
             return torch.tensor(orth(M), dtype=torch.float).to(self.device)
-        elif self.method == "RG-N":
+        elif self.method.lower() == "rg-n":
             return torch.randn(self.degree, self.degree).to(self.device)
-        elif self.method == "RG-U":
+        elif self.method.lower() == "rg-u":
             return torch.rand(self.degree, self.degree).to(self.device)
 
     def _assign_values(self):
