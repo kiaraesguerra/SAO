@@ -1,5 +1,5 @@
 import torch.nn as nn
-from lipconvnet_utils.maxmin import MaxMin
+from .lipconvnet_utils.maxmin import MaxMin
 
 activation_dict = {
     "tanh": nn.Tanh(),
