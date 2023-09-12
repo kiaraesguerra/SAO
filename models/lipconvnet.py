@@ -18,9 +18,7 @@ class NormalizedLinear(nn.Linear):
 
 
 class LipBlock(nn.Module):
-    def __init__(
-        self, in_planes, planes, conv_layer, stride=1, kernel_size=3
-    ):
+    def __init__(self, in_planes, planes, conv_layer, stride=1, kernel_size=3):
         super(LipBlock, self).__init__()
         self.conv = conv_layer(
             in_planes,
@@ -58,13 +56,13 @@ class LipConvNet(nn.Module):
             self.in_planes, block_size, SOC, stride=2, kernel_size=3
         )
         self.layer3 = self._make_layer(
-            self.in_planes, block_size, ECO,  stride=2, kernel_size=3
+            self.in_planes, block_size, ECO, stride=2, kernel_size=3
         )
         self.layer4 = self._make_layer(
             self.in_planes, block_size, ECO, stride=2, kernel_size=3
         )
         self.layer5 = self._make_layer(
-            self.in_planes, block_size, ECO,  stride=2, kernel_size=1
+            self.in_planes, block_size, ECO, stride=2, kernel_size=1
         )
 
         flat_size = input_side // 32
@@ -72,21 +70,15 @@ class LipConvNet(nn.Module):
         if self.lln:
             self.last_layer = NormalizedLinear(flat_features, num_classes)
         else:
-            self.last_layer = SOC(
-                flat_features, num_classes, kernel_size=1, stride=1
-            )
+            self.last_layer = SOC(flat_features, num_classes, kernel_size=1, stride=1)
 
-    def _make_layer(
-        self, planes, num_blocks, conv_layer, stride, kernel_size
-    ):
+    def _make_layer(self, planes, num_blocks, conv_layer, stride, kernel_size):
         strides = [1] * (num_blocks - 1) + [stride]
         kernel_sizes = [3] * (num_blocks - 1) + [kernel_size]
         layers = []
         for stride, kernel_size in zip(strides, kernel_sizes):
             layers.append(
-                LipBlock(
-                    self.in_planes, planes, conv_layer, stride, kernel_size
-                )
+                LipBlock(self.in_planes, planes, conv_layer, stride, kernel_size)
             )
             self.in_planes = planes * stride
         return nn.Sequential(*layers)

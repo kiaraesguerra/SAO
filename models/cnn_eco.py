@@ -60,17 +60,18 @@ class ECO(nn.Module):
         return z
 
 
-    
 class CNN_ECO(nn.Module):
-    def __init__(self,
-                 image_size,
-                 in_channels_0,
-                 activation,
-                 num_layers,
-                 hidden_width,
-                 num_classes=10):
+    def __init__(
+        self,
+        image_size,
+        in_channels_0,
+        activation,
+        num_layers,
+        hidden_width,
+        num_classes=10,
+    ):
         super(CNN_ECO, self).__init__()
-        
+
         self.image_size = image_size
         self.in_channels_0 = in_channels_0
         self.activation = activation_dict[activation]
@@ -78,23 +79,25 @@ class CNN_ECO(nn.Module):
         self.hidden_width = hidden_width
         self.num_classes = num_classes
         self.feature_extractor = self.make_layers()
-        self.fc = nn.Linear(hidden_width, num_classes)   
-        
+        self.fc = nn.Linear(hidden_width, num_classes)
+
     def forward(self, x):
         x = self.feature_extractor(x)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
-        return x   
-    
+        return x
+
     def make_layers(self):
         layers = []
         in_channels = 3
         for stride in [1, 2, 2]:
-            conv2d = nn.Conv2d(in_channels, self.hidden_width, kernel_size=3, padding=1, stride=stride)
+            conv2d = nn.Conv2d(
+                in_channels, self.hidden_width, kernel_size=3, padding=1, stride=stride
+            )
             layers += [conv2d, self.activation]
             in_channels = self.hidden_width
-            
+
         for i in range(self.num_layers):
             if i == self.num_layers // 2 - 1:
                 conv2d = ECO(
@@ -119,14 +122,30 @@ class CNN_ECO(nn.Module):
 
             else:
                 if i < 2:
-                    conv2d = nn.Conv2d(in_channels, self.hidden_width, kernel_size=3, padding=1, stride=1)
+                    conv2d = nn.Conv2d(
+                        in_channels,
+                        self.hidden_width,
+                        kernel_size=3,
+                        padding=1,
+                        stride=1,
+                    )
                 elif i > self.num_layers // 2 - 1:
                     conv2d = nn.Conv2d(
-                        self.hidden_width, self.hidden_width, kernel_size=3, padding=1, dilation=1, padding_mode="circular"
+                        self.hidden_width,
+                        self.hidden_width,
+                        kernel_size=3,
+                        padding=1,
+                        dilation=1,
+                        padding_mode="circular",
                     )
                 else:
                     conv2d = nn.Conv2d(
-                        self.hidden_width, self.hidden_width, kernel_size=3, padding=3, dilation=3, padding_mode="circular"
+                        self.hidden_width,
+                        self.hidden_width,
+                        kernel_size=3,
+                        padding=3,
+                        dilation=3,
+                        padding_mode="circular",
                     )
 
             layers += [conv2d, self.activation]
@@ -138,4 +157,3 @@ def cnn_eco(**kwargs):
     """Constructs a 8 layers vanilla model."""
     model = CNN_ECO(**kwargs)
     return model
-

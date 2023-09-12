@@ -5,15 +5,17 @@ __all__ = ["cnn"]
 
 
 class CNN(nn.Module):
-    def __init__(self,
-                 image_size,
-                 in_channels_0,
-                 activation,
-                 num_layers,
-                 hidden_width,
-                 num_classes=10):
+    def __init__(
+        self,
+        image_size,
+        in_channels_0,
+        activation,
+        num_layers,
+        hidden_width,
+        num_classes=10,
+    ):
         super(CNN, self).__init__()
-        
+
         self.image_size = image_size
         self.in_channels_0 = in_channels_0
         self.activation = activation_dict[activation]
@@ -33,13 +35,23 @@ class CNN(nn.Module):
         layers = []
         in_channels = 3
         for stride in [1, 2, 2]:
-            conv2d = nn.Conv2d(in_channels, self.hidden_width, kernel_size=3, padding=1, stride=stride)
+            conv2d = nn.Conv2d(
+                in_channels, self.hidden_width, kernel_size=3, padding=1, stride=stride
+            )
             layers += [conv2d, self.activation]
             in_channels = self.hidden_width
 
         for i in range(self.num_layers):
-            stride = 2 if (i == self.num_layers // 2 - 1) or (i > self.num_layers - 2) else 1
-            conv2d = nn.Conv2d(self.hidden_width, self.hidden_width, kernel_size=3, padding=1, stride=stride)
+            stride = (
+                2 if (i == self.num_layers // 2 - 1) or (i > self.num_layers - 2) else 1
+            )
+            conv2d = nn.Conv2d(
+                self.hidden_width,
+                self.hidden_width,
+                kernel_size=3,
+                padding=1,
+                stride=stride,
+            )
             layers += [conv2d, self.activation]
 
         return nn.Sequential(*layers)
@@ -49,4 +61,3 @@ def cnn(**kwargs):
     """Constructs a plain CNN."""
     model = CNN(**kwargs)
     return model
-

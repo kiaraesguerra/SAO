@@ -7,11 +7,11 @@ import einops
 class ECO(nn.Module):
     def __init__(
         self,
-        in_channels:int,
-        out_channels:int,
-        kernel_size:int=3,
-        stride:int=1,
-        bias:bool=False,
+        in_channels: int,
+        out_channels: int,
+        kernel_size: int = 3,
+        stride: int = 1,
+        bias: bool = False,
     ):
         super(ECO, self).__init__()
         assert (stride == 1) or (stride == 2) or (stride == 3)
@@ -22,7 +22,13 @@ class ECO(nn.Module):
         self.stride = stride
         self.kernel_size = kernel_size
         self.bias = bias
-        self.conv = nn.Conv2d(self.max_channels, self.max_channels, self.kernel_size, stride=1, bias=self.bias)
+        self.conv = nn.Conv2d(
+            self.max_channels,
+            self.max_channels,
+            self.kernel_size,
+            stride=1,
+            bias=self.bias,
+        )
 
     def forward(self, x):
         if self.stride > 1:
@@ -32,7 +38,7 @@ class ECO(nn.Module):
                 k1=self.stride,
                 k2=self.stride,
             )
-             
+
         if self.out_channels > self.in_channels:
             diff_channels = self.out_channels - self.in_channels
             p4d = (0, 0, 0, 0, 0, diff_channels, 0, 0)
@@ -51,19 +57,16 @@ class ECO(nn.Module):
         z = z[:, : self.out_channels, :, :]
 
         return z
-    
-    
+
+
 class ECOBlock(nn.Module):
-    def __init__(
-        self, in_planes, planes, conv_layer, stride=1, kernel_size=3
-    ):
+    def __init__(self, in_planes, planes, conv_layer, stride=1, kernel_size=3):
         super(ECOBlock, self).__init__()
         self.conv = conv_layer(
-                        in_channels=in_planes,
-                        out_channels=planes,
-                        kernel_size=kernel_size,
-                        stride = stride,
-        
+            in_channels=in_planes,
+            out_channels=planes,
+            kernel_size=kernel_size,
+            stride=stride,
         )
         self.activation = nn.ReLU()
 
