@@ -6,7 +6,7 @@ from train_utils.models import get_model
 from train_utils.utils import remove_parameters, measure_sparsity
 from train_utils.train_utils import get_plmodule
 from pruners.pruners import get_pruner
-from initializations.initializations import get_initializer
+from ortho_initializers.initializations import get_initializer
 from pytorch_lightning import Trainer
 import torch
 
