@@ -31,6 +31,7 @@ Thus, our solution is to leverage expander graphs (sparse yet highly-connected g
 ```bash
 git clone https://github.com/kiaraesguerra/SAO
 cd SAO
+git clone https://github.com/kiaraesguerra/AutoAugment
 conda create -n myenv python=3.9
 conda activate myenv
 pip install -r requirements.txt
@@ -49,7 +50,7 @@ pip install -r requirements.txt
 ### 1. Delta on Vanilla CNN
 
 ```
-python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 ### 2. SAO-Delta on Vanilla CNN
@@ -57,13 +58,13 @@ python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu
 When implementing SAO, the user can specify either the sparsity:
 
 ```
-python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 or the degree:
 
 ```
-python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --degree 4 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --degree 4 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 Note: When using Tanh, the minimum degree is 2. This should also be noted when specifying the sparsity, such that the sparsity should not result in a degree lower than 2, e.g., for Conv2d(16, 16), the maximum sparsity is 87.50%. For ReLU, the minimum degree is 4, where for Conv2d(16, 16), the maximum sparsity is 75.00%.
@@ -71,7 +72,7 @@ Note: When using Tanh, the minimum degree is 2. This should also be noted when s
 ### 3. ECO on Vanilla CNN
 
 ```
-python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta-eco' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --weight-init 'delta-eco' --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 ### 4. SAO-ECO on Vanilla CNN
@@ -79,13 +80,13 @@ python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation '
 Using sparsity:
 
 ```
-python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --sparsity 0.5 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 using degree:
 
 ```
-python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --degree 4 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment True 
+python main.py --model cnn_eco --num-layers 32 --hidden-width 128 --activation 'relu' --pruning-method SAO --degree 4 --lr 1e-2 --min-lr 0 --scheduler 'cosine' --autoaugment
 ```
 
 
