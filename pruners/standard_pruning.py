@@ -3,6 +3,42 @@ import torch.nn as nn
 import math
 from itertools import product
 
+class Standard_Pruning:
+    def __init__(
+        self,
+        model,
+        pruner,
+        sparsity: float = None,
+        degree: int = None,
+        in_channels: int = 3,
+        num_classes: int = 10,
+    ):
+        self.model = model
+        self.degree = degree
+        self.sparsity = sparsity if degree is None else self._sparsity_from_degree()
+        self.in_channels = in_channels
+        self.num_classes = num_classes
+
+        if pruner.lower() == "lrp":
+            self.pruner = mask_random
+        elif pruner.lower() == "lmp":
+            self.pruner = prune_vanilla_kernelwise
+
+    def _sparsity_from_degree(self):
+        return 1 - self.degree / max(self.in_, self.out_)
+
+    def _pruner(self):
+        for _, module in self.model.named_modules():
+            if isinstance(module, nn.Conv2d) and module.in_channels != self.in_channels:
+                with torch.no_grad():
+                    mask = self.pruner(module.weight, self.sparsity)
+                torch.nn.utils.prune.custom_from_mask(module, name="weight", mask=mask)
+
+        return self.model
+
+    def __call__(self):
+        return self._pruner()
+    
 
 def prune_vanilla_kernelwise(param, sparsity, fn_importance=lambda x: x.norm(1, -1)):
     """
@@ -44,38 +80,4 @@ def mask_random(weight, sparsity):
     return mask_tensor.to("cuda")
 
 
-class Standard_Pruning:
-    def __init__(
-        self,
-        model,
-        pruner,
-        sparsity: float = None,
-        degree: int = None,
-        in_channels: int = 3,
-        num_classes: int = 10,
-    ):
-        self.model = model
-        self.degree = degree
-        self.sparsity = sparsity if degree is None else self._sparsity_from_degree()
-        self.in_channels = in_channels
-        self.num_classes = num_classes
 
-        if pruner == "lrp" or pruner == "LRP":
-            self.pruner = mask_random
-        elif pruner == "lmp" or pruner == "LMP":
-            self.pruner = prune_vanilla_kernelwise
-
-    def _sparsity_from_degree(self):
-        return 1 - self.degree / max(self.in_, self.out_)
-
-    def _pruner(self):
-        for _, module in self.model.named_modules():
-            if isinstance(module, nn.Conv2d) and module.in_channels != self.in_channels:
-                with torch.no_grad():
-                    mask = self.pruner(module.weight, self.sparsity)
-                torch.nn.utils.prune.custom_from_mask(module, name="weight", mask=mask)
-
-        return self.model
-
-    def __call__(self):
-        return self._pruner()
